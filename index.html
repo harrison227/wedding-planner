@@ -1,0 +1,4032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wedding Table Planner</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f4f3ee;
+    --bg-sidebar: #e9e6dd;
+    --bg-card: #ffffff;
+    --bg-modal: rgba(26, 26, 26, 0.55);
+    --text: #1f1f1f;
+    --text-muted: #5f5f5f;
+    --text-light: #8e8e8e;
+    --accent: #6c8d7b;
+    --accent-dark: #4d6c5c;
+    --accent-light: #d4ddd6;
+    --accent-pale: #e8ece6;
+    --border: #d6d2c8;
+    --border-soft: #e3dfd3;
+    --status-good: #52795c;
+    --status-warn: #b89052;
+    --status-bad: #b55555;
+    --status-empty: #a8a49b;
+    --couple: #a56a8a;
+    --side-gabby: #c17b9a;
+    --side-gabby-bg: #faeef3;
+    --side-harrison: #587e9a;
+    --side-harrison-bg: #e9f0f5;
+    --bridal-bg: #ffffff;
+    --bridal-border: #2a2a2a;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-lg: 0 12px 32px rgba(0,0,0,0.18);
+    --radius: 12px;
+    --radius-sm: 6px;
+    --transition: 0.18s ease;
+    --font-display: 'Cormorant Garamond', 'Playfair Display', 'Garamond', Georgia, serif;
+    --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    font-family: var(--font-ui);
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============ HEADER ============ */
+  header {
+    background: linear-gradient(135deg, #262626 0%, #1a1a1a 100%);
+    color: #eee9dc;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: var(--shadow-md);
+    z-index: 10;
+    flex-shrink: 0;
+  }
+
+  .brand {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 22px;
+    letter-spacing: 1.5px;
+    color: #ffffff;
+  }
+
+  .event-name {
+    font-family: var(--font-display);
+    font-size: 13px;
+    color: rgba(240, 235, 225, 0.7);
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed transparent;
+    padding: 2px 4px;
+    color: inherit;
+    font-style: italic;
+    min-width: 120px;
+    max-width: 260px;
+  }
+
+  .event-name:hover, .event-name:focus {
+    border-bottom-color: rgba(240, 235, 225, 0.3);
+    outline: none;
+    color: var(--accent-light);
+  }
+
+  .header-stats {
+    display: flex;
+    gap: 22px;
+    padding: 0 20px;
+    border-left: 1px solid rgba(255,255,255,0.1);
+    border-right: 1px solid rgba(255,255,255,0.1);
+    margin: 0 auto 0 12px;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 56px;
+  }
+
+  .stat-value {
+    font-family: var(--font-display);
+    font-size: 24px;
+    color: var(--accent-light);
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 4px;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  /* ============ BUTTONS ============ */
+  button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    transition: var(--transition);
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .btn {
+    padding: 8px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    background: rgba(255,255,255,0.08);
+    color: var(--accent-light);
+    border: 1px solid rgba(255,255,255,0.15);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .btn:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.25);
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #1a1612;
+    border-color: var(--accent);
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-dark);
+    border-color: var(--accent-dark);
+    color: white;
+  }
+
+  .btn-secondary {
+    background: var(--border);
+    color: var(--text);
+    border-color: transparent;
+  }
+
+  .btn-secondary:hover {
+    background: #d8d2c4;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border-color: transparent;
+  }
+
+  .btn-ghost:hover {
+    background: var(--border-soft);
+    color: var(--text);
+  }
+
+  .btn-danger {
+    background: var(--status-bad);
+    color: white;
+    border-color: var(--status-bad);
+  }
+
+  .btn-danger:hover {
+    background: #a84848;
+    border-color: #a84848;
+  }
+
+  .btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* ============ LAYOUT ============ */
+  main {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  aside {
+    width: 320px;
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .sidebar-header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .sidebar-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  .sidebar-title-count {
+    font-family: var(--font-ui);
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: normal;
+  }
+
+  .sidebar-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    font-style: italic;
+  }
+
+  .search-row {
+    display: flex;
+    gap: 6px;
+  }
+
+  .search-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: white;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .sidebar-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    min-height: 100px;
+    transition: background var(--transition);
+  }
+
+  .sidebar-list.drop-target {
+    background: var(--accent-pale);
+  }
+
+  .sidebar-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    background: rgba(255,255,255,0.5);
+    flex-shrink: 0;
+    font-size: 11px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .saved-indicator {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .saved-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--status-good);
+  }
+
+  .saved-dot.saving {
+    background: var(--status-warn);
+    animation: pulse 1s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .canvas {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    min-width: 0;
+  }
+
+  /* ============ TABLES ============ */
+  .tables-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+  }
+
+  .table-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    border: 2px solid transparent;
+  }
+
+  .table-card:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  .table-card.drop-target {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light), var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .table-header {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border-soft);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(to bottom, #fefcf7, #fffefc);
+  }
+
+  .table-name {
+    flex: 1;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+    background: transparent;
+    border: none;
+    padding: 4px 4px;
+    color: var(--text);
+    border-radius: 4px;
+    min-width: 0;
+  }
+
+  .table-name:hover {
+    background: var(--border-soft);
+  }
+
+  .table-name:focus {
+    outline: none;
+    background: var(--accent-pale);
+  }
+
+  .badge {
+    padding: 3px 9px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--status-good);
+    color: white;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .badge.warn { background: var(--status-warn); }
+  .badge.bad { background: var(--status-bad); }
+  .badge.empty { background: var(--status-empty); }
+
+  .table-actions {
+    display: flex;
+    gap: 2px;
+  }
+
+  .icon-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    background: transparent;
+    flex-shrink: 0;
+  }
+
+  .icon-btn:hover {
+    background: var(--border);
+    color: var(--text);
+  }
+
+  .icon-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .table-body {
+    padding: 10px;
+    min-height: 90px;
+    flex: 1;
+    transition: background var(--transition);
+  }
+
+  .table-body.drop-target {
+    background: var(--accent-pale);
+  }
+
+  .table-empty {
+    text-align: center;
+    color: var(--text-light);
+    font-style: italic;
+    padding: 24px 8px;
+    font-size: 12px;
+  }
+
+  /* ============ GUEST CARD ============ */
+  .guest {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 8px 7px 10px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    border: 1px solid var(--border-soft);
+    margin-bottom: 5px;
+    cursor: grab;
+    transition: var(--transition);
+    font-size: 13px;
+    user-select: none;
+    position: relative;
+    min-width: 0;
+  }
+
+  .guest:last-child { margin-bottom: 0; }
+
+  .guest:active {
+    cursor: grabbing;
+  }
+
+  .guest:hover {
+    border-color: var(--accent);
+    box-shadow: 0 2px 6px rgba(201, 169, 97, 0.2);
+  }
+
+  .guest.dragging {
+    opacity: 0.35;
+  }
+
+  .guest.couple {
+    border-left: 3px solid var(--couple);
+    padding-left: 7px;
+  }
+
+  .guest.side-gabby {
+    border-left: 3px solid var(--side-gabby);
+    background: var(--side-gabby-bg);
+    padding-left: 7px;
+  }
+
+  .guest.side-harrison {
+    border-left: 3px solid var(--side-harrison);
+    background: var(--side-harrison-bg);
+    padding-left: 7px;
+  }
+
+  .guest.couple.side-gabby {
+    border-left: 3px double var(--couple);
+  }
+
+  .guest.couple.side-harrison {
+    border-left: 3px double var(--couple);
+  }
+
+  .guest-group {
+    font-size: 9px;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 1px 5px;
+    background: rgba(0,0,0,0.04);
+    border-radius: 3px;
+    white-space: nowrap;
+    font-weight: 600;
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Bridal table */
+  .table-card.bridal {
+    border-color: var(--bridal-border);
+    background: var(--bridal-bg);
+  }
+
+  .table-card.bridal .table-header {
+    background: linear-gradient(to bottom, #fff3d1, #fff9e8);
+    border-bottom-color: var(--bridal-border);
+  }
+
+  .table-card.bridal .table-name {
+    color: var(--accent-dark);
+    font-style: italic;
+  }
+
+  .table-card.bridal .table-name::before {
+    content: '♡ ';
+  }
+
+  /* Side filter */
+  .side-filters {
+    display: flex;
+    gap: 4px;
+    margin-top: 10px;
+  }
+
+  .side-filter-btn {
+    flex: 1;
+    padding: 6px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 500;
+    background: white;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    cursor: pointer;
+    text-align: center;
+    transition: var(--transition);
+  }
+
+  .side-filter-btn:hover {
+    border-color: var(--accent);
+  }
+
+  .side-filter-btn.active {
+    background: var(--text);
+    color: white;
+    border-color: var(--text);
+  }
+
+  .side-filter-btn.active.side-gabby-btn {
+    background: var(--side-gabby);
+    border-color: var(--side-gabby);
+    color: white;
+  }
+
+  .side-filter-btn.active.side-harrison-btn {
+    background: var(--side-harrison);
+    border-color: var(--side-harrison);
+    color: white;
+  }
+
+  .group-filter {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: white;
+    font-family: inherit;
+    font-size: 12px;
+    margin-top: 6px;
+    cursor: pointer;
+    color: var(--text);
+  }
+
+  /* View toggle */
+  .view-toggle {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: white;
+  }
+
+  .view-toggle button {
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    background: white;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .view-toggle button:hover {
+    background: var(--bg);
+  }
+
+  .view-toggle button.active {
+    background: var(--text);
+    color: white;
+  }
+
+  .view-toggle button svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  /* ======== Venue view ======== */
+  .venue-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  /* Bridal as a long rectangle at the top */
+  .venue-bridal {
+    position: relative;
+    background: var(--bridal-bg);
+    border: 2px solid var(--bridal-border);
+    border-radius: 10px;
+    padding: 18px 22px 22px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    transition: var(--transition);
+  }
+
+  .venue-bridal.drop-target {
+    box-shadow: 0 0 0 3px var(--accent-light), 0 8px 24px rgba(0,0,0,0.12);
+  }
+
+  .venue-bridal-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .venue-bridal-name {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--text);
+    background: transparent;
+    border: none;
+    padding: 2px 4px;
+    border-radius: 4px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .venue-bridal-name:hover, .venue-bridal-name:focus {
+    background: rgba(0,0,0,0.03);
+    outline: none;
+  }
+
+  .venue-bridal-count {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg);
+    padding: 2px 8px;
+    border-radius: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .venue-bridal-seats {
+    display: flex;
+    gap: 6px;
+  }
+
+  .venue-bridal-seat {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .venue-bridal-seat {
+    padding: 8px 6px;
+    border-radius: 8px;
+    background: white;
+    border: 2px solid var(--border);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: grab;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    transition: var(--transition);
+    user-select: none;
+    line-height: 1.2;
+    word-break: break-word;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .venue-bridal-seat:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  }
+
+  .venue-bridal-seat.side-gabby {
+    border-color: var(--side-gabby);
+    background: var(--side-gabby-bg);
+  }
+
+  .venue-bridal-seat.side-harrison {
+    border-color: var(--side-harrison);
+    background: var(--side-harrison-bg);
+  }
+
+  .venue-bridal-seat.dragging {
+    opacity: 0.35;
+  }
+
+
+  /* Round table grid — absolute positioning, draggable floor plan */
+  .venue-grid {
+    position: relative;
+    width: 100%;
+    min-width: 1200px;
+    min-height: 1400px;
+    padding-bottom: 80px;
+  }
+
+  .venue-table {
+    position: absolute;
+    width: 380px;
+    height: 380px;
+    transition: box-shadow var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    user-select: none;
+  }
+
+  .venue-table.dragging-table {
+    z-index: 100;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+    cursor: grabbing;
+  }
+
+  .venue-table-handle {
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    z-index: 4;
+    color: var(--text-muted);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    transition: var(--transition);
+  }
+
+  .venue-table-handle:hover {
+    background: var(--accent-pale);
+    color: var(--accent-dark);
+    border-color: var(--accent);
+  }
+
+  .venue-table-handle:active {
+    cursor: grabbing;
+  }
+
+  .venue-table-handle svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .venue-table-plate {
+    position: relative;
+    width: 380px;
+    height: 380px;
+    flex: 0 0 380px;
+  }
+
+  .venue-table.drop-target .venue-circle {
+    border-color: var(--accent-dark);
+    background: radial-gradient(circle at 30% 30%, #fff8dc, #e8d9b3);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.15), 0 4px 14px rgba(201, 169, 97, 0.4);
+  }
+
+  .venue-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 170px;
+    height: 170px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid var(--border);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 12px;
+    text-align: center;
+  }
+
+  .venue-table.under-min .venue-circle {
+    border-color: var(--status-warn);
+    border-style: dashed;
+  }
+
+  .venue-table.over-max .venue-circle {
+    border-color: var(--status-bad);
+  }
+
+  .venue-table-name-center {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    color: var(--text);
+    width: 100%;
+    padding: 2px 4px;
+    line-height: 1.2;
+    word-break: break-word;
+    border-radius: 4px;
+    cursor: text;
+    outline: none;
+  }
+
+  .venue-table-name-center:hover {
+    background: rgba(0,0,0,0.03);
+  }
+
+  .venue-table-name-center:focus {
+    background: #fff;
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+
+  .venue-table-count-tiny {
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--text-light);
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .venue-seat {
+    position: absolute;
+    width: 112px;
+    min-height: 34px;
+    border-radius: 17px;
+    background: white;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: grab;
+    transform: translate(-50%, -50%);
+    padding: 5px 8px;
+    white-space: normal;
+    line-height: 1.15;
+    word-break: break-word;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    transition: var(--transition);
+    user-select: none;
+  }
+
+  .venue-seat:hover {
+    z-index: 5;
+    transform: translate(-50%, -50%) scale(1.06);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+  }
+
+  .venue-seat.side-gabby {
+    border-color: var(--side-gabby);
+    background: var(--side-gabby-bg);
+  }
+
+  .venue-seat.side-harrison {
+    border-color: var(--side-harrison);
+    background: var(--side-harrison-bg);
+  }
+
+  .venue-seat.couple {
+    box-shadow: 0 0 0 2px var(--couple), 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .venue-seat.dragging {
+    opacity: 0.35;
+  }
+
+  .venue-seat.swap-target {
+    box-shadow: 0 0 0 3px var(--accent), 0 2px 6px rgba(0,0,0,0.12);
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+
+  .venue-empty-seat {
+    border-radius: 15px;
+    border: 2px dashed var(--border);
+    background: rgba(255,255,255,0.5);
+    transition: var(--transition);
+    cursor: copy;
+    color: var(--text-light);
+    font-size: 10px;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* Empty seat in round table — absolutely positioned */
+  .venue-table-plate > .venue-empty-seat {
+    position: absolute;
+    width: 108px;
+    height: 30px;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Empty seat in bridal rectangle — flex item */
+  .venue-bridal-seats > .venue-empty-seat {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 38px;
+    padding: 8px 6px;
+    border-radius: 8px;
+  }
+
+  .venue-empty-seat.drop-target {
+    border-color: var(--accent);
+    border-style: solid;
+    background: var(--accent-pale);
+    box-shadow: 0 0 0 3px var(--accent-light);
+    color: var(--accent-dark);
+  }
+
+  .venue-table .table-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    z-index: 6;
+    background: white;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Swap indicator on guest cards in list view */
+  .guest.swap-target {
+    box-shadow: 0 0 0 2px var(--accent);
+    transform: translateX(2px);
+  }
+
+  .guest.has-dietary {
+    background: #fefbf4;
+  }
+
+  .guest-name {
+    flex: 1 1 auto;
+    min-width: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .guest-icons {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+    flex-shrink: 0;
+    color: var(--text-light);
+  }
+
+  .guest-icons svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .icon-partner { color: var(--couple); }
+  .icon-dietary { color: var(--status-warn); }
+  .icon-note { color: var(--text-light); }
+
+  .guest-actions {
+    display: none;
+    gap: 1px;
+    margin-left: 2px;
+  }
+
+  .guest:hover .guest-actions {
+    display: flex;
+  }
+
+  .guest-actions .icon-btn {
+    width: 22px;
+    height: 22px;
+  }
+
+  .guest-actions .icon-btn svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* When searching, highlight matches */
+  .guest.match {
+    border-color: var(--accent);
+    background: var(--accent-pale);
+  }
+
+  /* Partner separation warning */
+  .guest.partner-elsewhere {
+    border-top-right-radius: 0;
+  }
+
+  .guest.partner-elsewhere::after {
+    content: attr(data-partner-location);
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    background: var(--status-warn);
+    color: white;
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 0 var(--radius-sm) 0 var(--radius-sm);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  /* ============ EMPTY STATES ============ */
+  .empty {
+    text-align: center;
+    color: var(--text-light);
+    font-style: italic;
+    padding: 20px 12px;
+    font-size: 13px;
+  }
+
+  .empty-tables {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 80px 24px 60px;
+    color: var(--text-muted);
+  }
+
+  .empty-tables h2 {
+    font-family: var(--font-display);
+    font-size: 28px;
+    margin-bottom: 8px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .empty-tables p {
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+
+  .empty-tables .empty-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .empty-tables .btn {
+    background: var(--accent);
+    color: #1a1612;
+    border-color: var(--accent);
+  }
+
+  .empty-tables .btn:hover {
+    background: var(--accent-dark);
+    color: white;
+  }
+
+  .empty-tables .btn.btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border-color: var(--border);
+  }
+
+  /* ============ MODAL ============ */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-modal);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+    backdrop-filter: blur(3px);
+  }
+
+  .modal-overlay.active {
+    display: flex;
+    animation: fadeIn 0.18s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .modal {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    max-width: 520px;
+    width: 100%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.2s ease;
+  }
+
+  .modal.modal-wide {
+    max-width: 720px;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .modal-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .modal-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    flex: 1;
+    font-weight: 500;
+  }
+
+  .modal-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+  }
+
+  .modal-close:hover {
+    background: var(--border);
+    color: var(--text);
+  }
+
+  .modal-body {
+    padding: 20px 22px;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .modal-footer {
+    padding: 14px 22px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .modal-footer .spacer {
+    flex: 1;
+  }
+
+  /* ============ FORMS ============ */
+  .form-group {
+    margin-bottom: 14px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 14px;
+    background: white;
+    color: var(--text);
+    transition: var(--transition);
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-pale);
+  }
+
+  textarea.form-control {
+    min-height: 200px;
+    font-family: ui-monospace, 'Consolas', monospace;
+    font-size: 13px;
+    resize: vertical;
+    line-height: 1.5;
+  }
+
+  .form-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 5px;
+    line-height: 1.5;
+  }
+
+  .form-hint code {
+    background: var(--bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+    color: var(--accent-dark);
+  }
+
+  /* ============ TOAST ============ */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #1a1612;
+    color: white;
+    padding: 10px 22px;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-lg);
+    transition: transform 0.3s ease;
+    z-index: 200;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 90vw;
+  }
+
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .toast.success { border-left: 3px solid var(--status-good); }
+  .toast.warn { border-left: 3px solid var(--status-warn); }
+  .toast.error { border-left: 3px solid var(--status-bad); }
+
+  /* ============ DROPDOWN MENU ============ */
+  .menu-wrap {
+    position: relative;
+  }
+
+  .menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    background: white;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-lg);
+    min-width: 200px;
+    overflow: hidden;
+    z-index: 50;
+    display: none;
+    padding: 4px 0;
+    border: 1px solid var(--border);
+  }
+
+  .menu.active {
+    display: block;
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+    background: white;
+    width: 100%;
+    text-align: left;
+  }
+
+  .menu-item:hover {
+    background: var(--bg);
+  }
+
+  .menu-item svg {
+    width: 14px;
+    height: 14px;
+    color: var(--text-muted);
+  }
+
+  .menu-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 0;
+  }
+
+  .menu-item.danger {
+    color: var(--status-bad);
+  }
+
+  .menu-item.danger svg {
+    color: var(--status-bad);
+  }
+
+  /* ============ CHECKBOX ============ */
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 4px 0;
+  }
+
+  .checkbox-row input {
+    cursor: pointer;
+    accent-color: var(--accent);
+  }
+
+  .checkbox-row label {
+    cursor: pointer;
+    margin: 0;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: normal;
+    color: var(--text);
+    font-size: 13px;
+  }
+
+  /* ============ VIEW TABS ============ */
+  .canvas-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .canvas-title {
+    font-family: var(--font-display);
+    font-size: 24px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .canvas-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .canvas-info {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  /* Keyboard shortcut */
+  kbd {
+    background: var(--border);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 11px;
+    font-family: inherit;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--border);
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 860px) {
+    header {
+      flex-wrap: wrap;
+      padding: 12px 14px;
+      gap: 10px;
+    }
+    .header-stats {
+      order: 3;
+      width: 100%;
+      margin: 0;
+      padding: 10px 0 0;
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      justify-content: center;
+    }
+    .header-actions {
+      margin-left: auto;
+    }
+    aside {
+      width: 260px;
+    }
+    .btn-label { display: none; }
+    .btn { padding: 8px 10px; }
+  }
+
+  @media (max-width: 640px) {
+    aside {
+      width: 220px;
+    }
+    .tables-grid {
+      grid-template-columns: 1fr;
+    }
+    h1 { font-size: 18px; }
+    .canvas { padding: 14px; }
+  }
+
+  /* ============ PRINT ============ */
+  @media print {
+    @page { margin: 1.5cm; }
+    body { background: white; overflow: visible; height: auto; }
+    header, aside, .table-actions, .icon-btn, .guest-actions, .canvas-header .btn, .modal-overlay { display: none !important; }
+    main { overflow: visible; height: auto; }
+    .canvas { padding: 0; overflow: visible; }
+    .tables-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    .table-card {
+      break-inside: avoid;
+      box-shadow: none !important;
+      border: 1px solid #999 !important;
+      transform: none !important;
+    }
+    .table-header {
+      background: #f5f5f5 !important;
+      border-bottom: 1px solid #ccc;
+    }
+    .guest {
+      break-inside: avoid;
+      background: white !important;
+      border: 1px solid #ddd !important;
+      box-shadow: none !important;
+    }
+    .canvas-title {
+      text-align: center;
+      font-size: 32px;
+      margin-bottom: 6px;
+    }
+    .canvas-info { justify-content: center; width: 100%; }
+    .canvas-sub { text-align: center; }
+    .badge { border: 1px solid #999; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <h1>Wedding Table Planner</h1>
+    <input class="event-name" id="eventName" value="Our Wedding" placeholder="Event name">
+  </div>
+
+  <div class="header-stats">
+    <div class="stat"><span class="stat-value" id="statGuests">0</span><span class="stat-label">Guests</span></div>
+    <div class="stat"><span class="stat-value" id="statSeated">0</span><span class="stat-label">Seated</span></div>
+    <div class="stat"><span class="stat-value" id="statTables">0</span><span class="stat-label">Tables</span></div>
+  </div>
+
+  <div class="header-actions">
+    <button class="btn btn-primary" id="btnAddGuest" title="Add a single guest">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+      <span class="btn-label">Guest</span>
+    </button>
+    <button class="btn" id="btnBulkImport" title="Bulk import guests">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+      <span class="btn-label">Import</span>
+    </button>
+    <button class="btn" id="btnAddTable" title="Add a table">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg>
+      <span class="btn-label">Table</span>
+    </button>
+    <button class="btn" id="btnShuffle" title="Auto-assign guests to tables">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+      <span class="btn-label">Shuffle</span>
+    </button>
+    <div class="menu-wrap">
+      <button class="btn" id="btnMore" title="More options">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+      </button>
+      <div class="menu" id="moreMenu">
+        <button class="menu-item" data-action="print">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print seating chart
+        </button>
+        <button class="menu-item" data-action="exportJson">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          Export backup (JSON)
+        </button>
+        <button class="menu-item" data-action="exportCsv">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+          Export guest list (CSV)
+        </button>
+        <button class="menu-item" data-action="importJson">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+          Restore from backup
+        </button>
+        <div class="menu-divider"></div>
+        <button class="menu-item" data-action="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings
+        </button>
+        <div class="menu-divider"></div>
+        <button class="menu-item danger" data-action="clearAll">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Clear everything
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <aside>
+    <div class="sidebar-header">
+      <div class="sidebar-title">
+        Unassigned <span class="sidebar-title-count" id="unassignedCount">0</span>
+      </div>
+      <div class="sidebar-sub">Drag guests onto tables</div>
+      <div class="search-row">
+        <input type="search" class="search-input" id="search" placeholder="Search guests..." aria-label="Search guests">
+      </div>
+      <div class="side-filters">
+        <button class="side-filter-btn active" data-side="">All</button>
+        <button class="side-filter-btn side-gabby-btn" data-side="gabby">Gabby</button>
+        <button class="side-filter-btn side-harrison-btn" data-side="harrison">Harrison</button>
+      </div>
+      <select class="group-filter" id="groupFilter">
+        <option value="">All groups</option>
+      </select>
+    </div>
+    <div class="sidebar-list" id="unassignedList"></div>
+    <div class="sidebar-footer">
+      <div class="saved-indicator">
+        <span class="saved-dot" id="savedDot"></span>
+        <span id="savedText">Saved</span>
+      </div>
+      <div id="minMaxInfo">8–10 per table</div>
+    </div>
+  </aside>
+
+  <div class="canvas">
+    <div class="canvas-header">
+      <div class="canvas-info">
+        <div class="canvas-title" id="canvasTitle">Tables</div>
+        <div class="canvas-sub" id="canvasSub"></div>
+      </div>
+      <div class="view-toggle" id="viewToggle">
+        <button data-view="list" class="active" title="List view">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          List
+        </button>
+        <button data-view="venue" title="Venue view (round tables)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
+          Venue
+        </button>
+      </div>
+    </div>
+    <div class="tables-grid" id="tablesGrid"></div>
+  </div>
+</main>
+
+<!-- ============ MODALS ============ -->
+
+<!-- Add / Edit Guest Modal -->
+<div class="modal-overlay" id="guestModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="guestModalTitle">Add Guest</div>
+      <button class="modal-close" data-close-modal>×</button>
+    </div>
+    <form id="guestForm">
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="guestName">Name</label>
+          <input type="text" id="guestName" class="form-control" required autocomplete="off" placeholder="e.g. Jane Smith">
+        </div>
+        <div class="form-group" id="partnerGroup">
+          <label for="guestPartner">Partner (optional)</label>
+          <input type="text" id="guestPartner" class="form-control" autocomplete="off" placeholder="e.g. John Smith">
+          <div class="form-hint">Creates a new partner — both kept together when shuffling.</div>
+        </div>
+        <div class="form-group" id="pairingGroup" style="display:none">
+          <label for="pairWithSelect">Pair with existing guest</label>
+          <select id="pairWithSelect" class="form-control"></select>
+          <div class="form-hint">Couples move together — drag one and the other follows. Set to "(none)" to unpair.</div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="guestSide">Side</label>
+            <select id="guestSide" class="form-control">
+              <option value="">—</option>
+              <option value="gabby">Gabby</option>
+              <option value="harrison">Harrison</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="guestGroupField">Group</label>
+            <input type="text" id="guestGroupField" class="form-control" list="groupList" autocomplete="off" placeholder="e.g. Family, Friends">
+            <datalist id="groupList">
+              <option value="Family"></option>
+              <option value="Family Friends"></option>
+              <option value="Friends"></option>
+              <option value="Church/EXTRA"></option>
+              <option value="Bridal Party"></option>
+            </datalist>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="guestDietary">Dietary</label>
+            <input type="text" id="guestDietary" class="form-control" autocomplete="off" placeholder="e.g. vegetarian, GF">
+          </div>
+          <div class="form-group">
+            <label for="guestTable">Table</label>
+            <select id="guestTable" class="form-control"></select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="guestNotes">Notes</label>
+          <input type="text" id="guestNotes" class="form-control" autocomplete="off" placeholder="e.g. bride's cousin, VIP">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="btnDeleteGuest" style="display:none">Delete</button>
+        <div class="spacer"></div>
+        <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+        <button type="submit" class="btn btn-primary" id="btnSaveGuest">Save Guest</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Bulk Import Modal -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal modal-wide">
+    <div class="modal-header">
+      <div class="modal-title">Bulk Import Guests</div>
+      <button class="modal-close" data-close-modal>×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="importText">Paste guest list — one per line</label>
+        <textarea id="importText" class="form-control" placeholder="Jane Smith
+John Smith & Mary Smith
+Alice Brown + Bob Brown
+Charlie Green (vegetarian)
+Diana White [bride's aunt]
+Eve Black & Frank Black (GF) [parents' friends]"></textarea>
+        <div class="form-hint">
+          <strong>Formats:</strong><br>
+          • <code>Name</code> — single guest<br>
+          • <code>Name &amp; Partner</code> or <code>Name + Partner</code> or <code>Name and Partner</code> — couple<br>
+          • <code>Name (dietary)</code> — e.g. <code>Jane (vegetarian)</code><br>
+          • <code>Name [notes]</code> — e.g. <code>John [VIP]</code><br>
+          • Combine: <code>Jane &amp; John (both veg) [table of honour]</code>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="checkbox-row">
+          <input type="checkbox" id="importReplace">
+          <span>Replace existing guest list (otherwise append)</span>
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+      <button type="button" class="btn btn-primary" id="btnDoImport">Import Guests</button>
+    </div>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Settings</div>
+      <button class="modal-close" data-close-modal>×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="settingMin">Min per table</label>
+          <input type="number" id="settingMin" class="form-control" min="1" max="20" value="8">
+        </div>
+        <div class="form-group">
+          <label for="settingMax">Max per table</label>
+          <input type="number" id="settingMax" class="form-control" min="1" max="20" value="10">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="checkbox-row">
+          <input type="checkbox" id="settingShowWarnings" checked>
+          <span>Show warning when partners are at different tables</span>
+        </label>
+      </div>
+      <hr style="border:none;border-top:1px solid var(--border);margin:18px 0">
+      <div class="form-group">
+        <label for="syncConfig" style="display:flex;align-items:center;gap:6px;">
+          Live sync (Firebase) <span id="syncStatusBadge" style="font-size:10px;padding:2px 7px;border-radius:10px;background:var(--border);color:var(--text-muted);font-weight:600;letter-spacing:0.5px;">OFFLINE</span>
+        </label>
+        <textarea id="syncConfig" class="form-control" placeholder='Paste Firebase config JSON here, e.g. {"apiKey":"...","authDomain":"...","databaseURL":"...","projectId":"...","appId":"..."}' style="min-height:120px;font-family:ui-monospace,monospace;font-size:12px"></textarea>
+        <div class="form-hint">
+          Paste your Firebase Realtime Database config to share this seating chart with someone else live.<br>
+          <strong>Setup (3 min):</strong> 1) <a href="https://console.firebase.google.com" target="_blank" style="color:var(--accent-dark)">Create a Firebase project</a> 2) Build → Realtime Database → Create (start in <em>test mode</em>) 3) Project settings → Your apps → Web app → copy the config object 4) Paste here and Save.
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn" id="btnDisconnectSync" style="display:none">Disconnect Sync</button>
+      <div class="spacer"></div>
+      <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+      <button type="button" class="btn btn-primary" id="btnSaveSettings">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="confirmTitle">Confirm</div>
+      <button class="modal-close" data-close-modal>×</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirmMessage" style="font-size: 15px; line-height: 1.5;"></p>
+    </div>
+    <div class="modal-footer">
+      <div class="spacer"></div>
+      <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+      <button type="button" class="btn btn-danger" id="btnConfirmYes">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- File input for restore -->
+<input type="file" id="fileInput" accept="application/json" style="display:none">
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+// ============================================================
+// STATE MANAGEMENT
+// ============================================================
+const STORAGE_KEY = 'wedding-table-planner-v1';
+const SYNC_CONFIG_KEY = 'wedding-table-planner-sync-config';
+const SYNC_ROOM = 'main';
+const STATE_VERSION = 7;
+
+const defaultState = () => ({
+  version: STATE_VERSION,
+  eventName: 'Our Wedding',
+  guests: [],
+  tables: [],
+  view: 'venue',
+  filter: { side: '', group: '' },
+  settings: {
+    minPerTable: 8,
+    maxPerTable: 10,
+    confirmPartner: true,
+    showWarnings: true
+  }
+});
+
+let state = defaultState();
+let historyStack = [];
+const HISTORY_LIMIT = 20;
+
+function uid() {
+  return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-3);
+}
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // If stored version is older than current, reset to fresh prepopulated data
+      if (!parsed.version || parsed.version < STATE_VERSION) {
+        localStorage.removeItem(STORAGE_KEY);
+        return;
+      }
+      state = { ...defaultState(), ...parsed, settings: { ...defaultState().settings, ...(parsed.settings || {}) }, filter: { ...defaultState().filter, ...(parsed.filter || {}) } };
+    }
+  } catch (e) {
+    console.error('Failed to load state:', e);
+  }
+}
+
+let saveTimer = null;
+function saveState(skipHistory) {
+  if (!skipHistory) pushHistory();
+  flashSavingIndicator();
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      markSaved();
+    } catch (e) {
+      console.error('Save failed:', e);
+      toast('Save failed: storage full?', 'error');
+    }
+    // Push to cloud sync if active
+    if (sync.ready && !sync.applyingRemote) {
+      sync.set(state).catch(e => console.error('Sync push failed:', e));
+    }
+  }, 180);
+}
+
+// ============================================================
+// CLOUD SYNC (Firebase Realtime Database)
+// ============================================================
+const sync = {
+  ready: false,
+  ref: null,
+  set: null,
+  applyingRemote: false,
+  config: null
+};
+
+function getSyncConfig() {
+  try {
+    const stored = localStorage.getItem(SYNC_CONFIG_KEY);
+    if (stored) return JSON.parse(stored);
+  } catch (e) {}
+  return null;
+}
+
+function saveSyncConfig(config) {
+  if (config) localStorage.setItem(SYNC_CONFIG_KEY, JSON.stringify(config));
+  else localStorage.removeItem(SYNC_CONFIG_KEY);
+}
+
+async function initSync() {
+  const config = getSyncConfig();
+  if (!config || !config.apiKey) return;
+  try {
+    const appMod = await import('https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js');
+    const dbMod = await import('https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js');
+    const app = appMod.initializeApp(config);
+    const db = dbMod.getDatabase(app);
+    const stateRef = dbMod.ref(db, `weddings/${SYNC_ROOM}`);
+    sync.ref = stateRef;
+    sync.config = config;
+    sync.set = (data) => dbMod.set(stateRef, data);
+
+    let firstSnapshot = true;
+    dbMod.onValue(stateRef, (snapshot) => {
+      const remote = snapshot.val();
+      if (firstSnapshot) {
+        firstSnapshot = false;
+        sync.ready = true;
+        updateSyncStatus(true);
+        if (!remote) {
+          // No remote state yet — push our local state to seed
+          if (state.guests.length > 0 || state.tables.length > 0) {
+            sync.set(state).catch(console.error);
+          }
+          return;
+        }
+      }
+      if (!remote) return;
+      const remoteJson = JSON.stringify(remote);
+      const localJson = JSON.stringify(state);
+      if (remoteJson === localJson) return;
+      sync.applyingRemote = true;
+      state = {
+        ...defaultState(),
+        ...remote,
+        settings: { ...defaultState().settings, ...(remote.settings || {}) },
+        filter: { ...defaultState().filter, ...(remote.filter || {}) }
+      };
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){}
+      render();
+      markSaved();
+      sync.applyingRemote = false;
+    }, (error) => {
+      console.error('Firebase sync error:', error);
+      updateSyncStatus(false, error.message);
+      toast('Live sync error — check Firebase rules', 'error');
+    });
+  } catch (e) {
+    console.error('Sync init failed:', e);
+    toast('Live sync failed to start', 'warn');
+  }
+}
+
+function updateSyncStatus(online, message) {
+  const badge = document.getElementById('syncStatusBadge');
+  if (badge) {
+    badge.textContent = online ? 'LIVE' : 'OFFLINE';
+    badge.style.background = online ? 'var(--status-good)' : 'var(--border)';
+    badge.style.color = online ? 'white' : 'var(--text-muted)';
+  }
+  const sidebarFooter = document.querySelector('.sidebar-footer .saved-indicator');
+  if (sidebarFooter && online) {
+    sidebarFooter.style.color = 'var(--status-good)';
+  }
+}
+
+function disconnectSync() {
+  saveSyncConfig(null);
+  sync.ready = false;
+  sync.ref = null;
+  sync.config = null;
+  updateSyncStatus(false);
+  toast('Disconnected from cloud — reload to fully reset', 'success');
+}
+
+function pushHistory() {
+  historyStack.push(JSON.stringify(state));
+  if (historyStack.length > HISTORY_LIMIT) historyStack.shift();
+}
+
+function undo() {
+  if (historyStack.length === 0) return toast('Nothing to undo', 'warn');
+  const prev = historyStack.pop();
+  try {
+    state = JSON.parse(prev);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    render();
+    toast('Undone', 'success');
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+// ============================================================
+// PRE-POPULATED DATA (Harrison & Gabby's Wedding)
+// ============================================================
+const PREPOPULATED = {
+  eventName: "Harrison & Gabby's Wedding",
+  bridal: {
+    gabby: ['Gabby', 'Tahani', 'Layla', 'Maddi', 'Parker'],
+    harrison: ['Harrison', 'Jordan Moses', 'Toby Matthews', 'Isaac Hanson', 'Flynn Macourt']
+  },
+  // [name, side, group, dietary?, notes?]
+  guests: [
+    // Gabby's Family
+    ['Rosey', 'gabby', 'Family'],
+    ['Julio', 'gabby', 'Family'],
+    ['Granna', 'gabby', 'Family'],
+    ['Aunty Anne', 'gabby', 'Family'],
+    ['Aunty Patti', 'gabby', 'Family'],
+    ['Uncle Ian', 'gabby', 'Family'],
+    ['Prue', 'gabby', 'Family'],
+    ['Nic', 'gabby', 'Family'],
+    ['Britt', 'gabby', 'Family'],
+    ['Charlie', 'gabby', 'Family'],
+    ['Jill', 'gabby', 'Family'],
+    // Harrison's Family
+    ['Tui', 'harrison', 'Family'],
+    ['Scott', 'harrison', 'Family'],
+    ['Bronwyn', 'harrison', 'Family'],
+    ['Kate', 'harrison', 'Family'],
+    ['Jasper', 'harrison', 'Family'],
+    ['John Lotty', 'harrison', 'Family'],
+    // Gabby's Family Friends
+    ['Sue', 'gabby', 'Family Friends'],
+    ['Neil', 'gabby', 'Family Friends'],
+    ['Shelley', 'gabby', 'Family Friends'],
+    ['Lachie', 'gabby', 'Family Friends'],
+    ['Cheryl', 'gabby', 'Family Friends'],
+    ['Katrina', 'gabby', 'Family Friends'],
+    ['Dave', 'gabby', 'Family Friends'],
+    ['Mike', 'gabby', 'Family Friends'],
+    ['Louise', 'gabby', 'Family Friends'],
+    ['Ava', 'gabby', 'Family Friends'],
+    ['Emily', 'gabby', 'Family Friends'],
+    ['Grace', 'gabby', 'Family Friends'],
+    // Harrison's Family Friends
+    ['Kris', 'harrison', 'Family Friends'],
+    ['Carol', 'harrison', 'Family Friends'],
+    ['Simon', 'harrison', 'Family Friends'],
+    ['Ash', 'harrison', 'Family Friends'],
+    ['Nicki', 'harrison', 'Family Friends'],
+    ['Dan', 'harrison', 'Family Friends'],
+    ['Ciaran', 'harrison', 'Family Friends'],
+    ['Eric', 'harrison', 'Family Friends'],
+    ['Alix', 'harrison', 'Family Friends'],
+    ['Nodge', 'harrison', 'Family Friends'],
+    ['Nickers', 'harrison', 'Family Friends'],
+    ['Joanne', 'harrison', 'Family Friends'],
+    ['Mark', 'harrison', 'Family Friends'],
+    ['Joane', 'harrison', 'Family Friends'],
+    ['Matthew', 'harrison', 'Family Friends'],
+    ['Flow', 'harrison', 'Family Friends'],
+    ['David', 'harrison', 'Family Friends'],
+    ['Lindel', 'harrison', 'Family Friends'],
+    ['Jane', 'harrison', 'Family Friends'],
+    ['Brad', 'harrison', 'Family Friends'],
+    ['Ella', 'harrison', 'Family Friends'],
+    ['Jess (H)', 'harrison', 'Family Friends'],
+    ['David (2)', 'harrison', 'Family Friends'],
+    // Gabby's Friends
+    ['Em', 'gabby', 'Friends'],
+    ['Ariana', 'gabby', 'Friends'],
+    ['Zac', 'gabby', 'Friends'],
+    ['Sophie', 'gabby', 'Friends'],
+    ['Jess', 'gabby', 'Friends'],
+    ['Tom', 'gabby', 'Friends'],
+    ['Sophia', 'gabby', 'Friends'],
+    ['Torgan', 'gabby', 'Friends'],
+    ['Bridgette', 'gabby', 'Friends'],
+    ['Chris', 'gabby', 'Friends'],
+    ['Vivianne', 'gabby', 'Friends'],
+    ['Naomi', 'gabby', 'Friends'],
+    ['Bea', 'gabby', 'Friends'],
+    ['Mia', 'gabby', 'Friends'],
+    ['James', 'gabby', 'Friends'],
+    ['Kim', 'gabby', 'Friends'],
+    ['Claire', 'gabby', 'Friends'],
+    ['Nancy', 'gabby', 'Friends'],
+    ['Funda', 'gabby', 'Friends'],
+    ['Robbie', 'gabby', 'Friends'],
+    ['Aiden', 'gabby', 'Friends'],
+    ['Josephine', 'gabby', 'Friends'],
+    ['Bella', 'gabby', 'Friends'],
+    ['Lachie (2)', 'gabby', 'Friends'],
+    // Harrison's Friends
+    ['Jordan A', 'harrison', 'Friends'],
+    ['Flinders', 'harrison', 'Friends'],
+    ['Brooke Morgan', 'harrison', 'Friends'],
+    ['Tani', 'harrison', 'Friends'],
+    ['Soph', 'harrison', 'Friends'],
+    ['Fran', 'harrison', 'Friends'],
+    ['Sophia Valencic', 'harrison', 'Friends'],
+    ['Jema', 'harrison', 'Friends'],
+    ['Chloe', 'harrison', 'Friends'],
+    ['Nate', 'harrison', 'Friends'],
+    ['Natarsha', 'harrison', 'Friends'],
+    ['Daniel LAURY', 'harrison', 'Friends'],
+    ['Anthony', 'harrison', 'Friends'],
+    ['Brooke M', 'harrison', 'Friends'],
+    ['Sam', 'harrison', 'Friends', '', "Flynn's partner"],
+    ['John', 'harrison', 'Friends'],
+    ['James (H)', 'harrison', 'Friends'],
+    ['Macka', 'harrison', 'Friends'],
+    ['Charlie (H)', 'harrison', 'Friends'],
+    ['Keeghan', 'harrison', 'Friends'],
+    ['Ollie Wellings', 'harrison', 'Friends'],
+    ['Finn Canning', 'harrison', 'Friends'],
+    ['Hugh Brogden', 'harrison', 'Friends'],
+    ['Moses Mum', 'harrison', 'Friends'],
+    ['Moses Dad', 'harrison', 'Friends'],
+    ['Dion', 'harrison', 'Friends'],
+    ['Josh', 'harrison', 'Friends', '', "Sophia Valencic's boyfriend"],
+    ['Harry Hong', 'harrison', 'Friends'],
+    ['Charlie Girlfriend', 'harrison', 'Friends', '', "Partner of Charlie (H)"],
+    ['Ed Pfahlert', 'harrison', 'Friends'],
+    ['Omar', 'harrison', 'Friends'],
+    ['Megan', 'harrison', 'Friends'],
+    ['Bruey', 'harrison', 'Friends'],
+    ['Yen', 'harrison', 'Friends'],
+    // Church/EXTRA (treated as Harrison's side for layout; user can reassign)
+    ['Evana', 'harrison', 'Church/EXTRA'],
+    ['AmyCamp Girl', 'harrison', 'Church/EXTRA'],
+    ['Mons', 'harrison', 'Church/EXTRA'],
+    ['Peter', 'harrison', 'Church/EXTRA'],
+    ['Matt', 'harrison', 'Church/EXTRA'],
+    ['Jodhi', 'harrison', 'Church/EXTRA'],
+    ['Jonno', 'harrison', 'Church/EXTRA'],
+    ['Stefan', 'harrison', 'Church/EXTRA'],
+    ['Giselle', 'harrison', 'Church/EXTRA'],
+    ['Will', 'harrison', 'Church/EXTRA']
+  ],
+  // Explicit couple pairings to auto-apply by name
+  couples: [
+    ['Aunty Anne', 'Uncle Ian'],
+    ['Moses Mum', 'Moses Dad'],
+    ['Josh', 'Sophia Valencic'],
+    ['Charlie (H)', 'Charlie Girlfriend']
+    // Sam is Flynn's +1 but Flynn is at the bridal table, so we leave Sam unpaired but keep the note.
+  ]
+};
+
+function populateWedding() {
+  state.eventName = PREPOPULATED.eventName;
+
+  const bridal = createTable('Bridal Table', { isBridal: true, capacity: 10 });
+
+  // Traditional wedding head-table order (left to right, audience view):
+  // [Groomsmen — best man closest to groom] [Groom] [Bride] [Bridesmaids — MOH closest to bride]
+  const bridalOrder = [
+    { name: 'Flynn Macourt', side: 'harrison' },
+    { name: 'Isaac Hanson',  side: 'harrison' },
+    { name: 'Toby Matthews', side: 'harrison' },
+    { name: 'Jordan Moses',  side: 'harrison' },  // best man
+    { name: 'Harrison',      side: 'harrison' },
+    { name: 'Gabby',         side: 'gabby' },
+    { name: 'Tahani',        side: 'gabby' },      // maid of honour
+    { name: 'Maddi',         side: 'gabby' },
+    { name: 'Layla',         side: 'gabby' },
+    { name: 'Parker',        side: 'gabby' }
+  ];
+
+  bridalOrder.forEach((p, idx) => {
+    const g = createGuest({ name: p.name, side: p.side, group: 'Bridal Party', tableId: bridal.id });
+    if (g) g.seatIndex = idx;
+  });
+
+  PREPOPULATED.guests.forEach(row => {
+    const [name, side, group, dietary, notes] = row;
+    createGuest({ name, side, group, dietary: dietary || '', notes: notes || '' });
+  });
+
+  // Apply explicit couple pairings
+  (PREPOPULATED.couples || []).forEach(([a, b]) => {
+    const g1 = state.guests.find(x => x.name === a);
+    const g2 = state.guests.find(x => x.name === b);
+    if (g1 && g2) pairGuests(g1.id, g2.id);
+  });
+
+  // Auto-pair by name pattern: "X Mum" + "X Dad"
+  autoPairByNamePattern();
+
+  // Auto-shuffle non-bridal guests into side-segregated tables
+  autoAssignNonBridal();
+}
+
+function autoPairByNamePattern() {
+  const byStem = {};
+  state.guests.forEach(g => {
+    const m = g.name.match(/^(.+?)\s+(Mum|Mom|Dad|Father|Mother|Parent)$/i);
+    if (m) {
+      const stem = m[1].trim().toLowerCase();
+      (byStem[stem] = byStem[stem] || []).push(g);
+    }
+  });
+  Object.values(byStem).forEach(arr => {
+    if (arr.length === 2 && !arr[0].partnerId && !arr[1].partnerId) {
+      pairGuests(arr[0].id, arr[1].id);
+    }
+  });
+}
+
+function autoAssignNonBridal() {
+  const bridalIds = new Set(state.tables.filter(t => t.isBridal).map(t => t.id));
+  const nonBridal = state.guests.filter(g => !bridalIds.has(g.tableId) && g.group !== 'Bridal Party');
+
+  // Tear down existing non-bridal tables so we rebuild them side-first
+  const removedIds = new Set(state.tables.filter(t => !t.isBridal).map(t => t.id));
+  state.tables = state.tables.filter(t => t.isBridal);
+  state.guests.forEach(g => { if (removedIds.has(g.tableId)) g.tableId = null; });
+
+  const { minPerTable, maxPerTable } = state.settings;
+
+  // Collect guests by side → group
+  const bySide = { gabby: {}, harrison: {}, other: {} };
+  nonBridal.forEach(g => {
+    const s = (g.side === 'gabby' || g.side === 'harrison') ? g.side : 'other';
+    const grp = g.group || 'Other';
+    (bySide[s][grp] = bySide[s][grp] || []).push(g);
+  });
+
+  const GROUP_ORDER = ['Family', 'Family Friends', 'Friends', 'Church/EXTRA', 'Other'];
+
+  const coupleUnits = arr => {
+    const result = [];
+    const seen = new Set();
+    for (const g of arr) {
+      if (seen.has(g.id)) continue;
+      const p = g.partnerId ? arr.find(x => x.id === g.partnerId) : null;
+      if (p) { result.push([g, p]); seen.add(g.id); seen.add(p.id); }
+      else { result.push([g]); seen.add(g.id); }
+    }
+    return result;
+  };
+
+  const sideLabel = s => s === 'gabby' ? "Gabby's" : s === 'harrison' ? "Harrison's" : '';
+
+  // Process each side independently — no cross-side tables
+  ['gabby', 'harrison', 'other'].forEach(side => {
+    const bucket = bySide[side];
+    if (!bucket || Object.keys(bucket).length === 0) return;
+
+    // Total people on this side
+    let sideTotal = 0;
+    Object.values(bucket).forEach(arr => sideTotal += arr.length);
+    if (sideTotal === 0) return;
+
+    // Pre-allocate optimal number of tables for this side so we pack to 9-10 rather than scatter
+    const targetCount = Math.max(1, Math.ceil(sideTotal / maxPerTable));
+
+    const orderedGroups = [];
+    GROUP_ORDER.forEach(g => { if (bucket[g]) orderedGroups.push({ group: g, members: bucket[g] }); });
+    Object.keys(bucket).filter(g => !GROUP_ORDER.includes(g)).forEach(g => orderedGroups.push({ group: g, members: bucket[g] }));
+
+    // Pre-create target number of (initially empty) side tables
+    const sideTables = [];
+    for (let i = 0; i < targetCount; i++) {
+      const tbl = createTable(`${sideLabel(side) || 'Table'} ${i + 1}`);
+      sideTables.push({ table: tbl, primaryGroup: null, side, guests: [] });
+    }
+
+    // Pack each (side, group) into tables — prefer same-group, then empty, then emptiest
+    orderedGroups.forEach(({ group, members }) => {
+      const units = coupleUnits(members);
+      units.forEach(unit => {
+        let candidates = sideTables.filter(t => t.guests.length + unit.length <= maxPerTable);
+        if (candidates.length === 0) {
+          const tbl = createTable(`${sideLabel(side)} Overflow`);
+          const wrap = { table: tbl, primaryGroup: group, side, guests: [] };
+          sideTables.push(wrap);
+          candidates = [wrap];
+        }
+        candidates.sort((a, b) => {
+          const aSame = a.primaryGroup === group ? 0 : (a.primaryGroup === null ? 1 : 2);
+          const bSame = b.primaryGroup === group ? 0 : (b.primaryGroup === null ? 1 : 2);
+          if (aSame !== bSame) return aSame - bSame;
+          return a.guests.length - b.guests.length;
+        });
+        const target = candidates[0];
+        if (!target.primaryGroup) target.primaryGroup = group;
+        unit.forEach(g => {
+          g.tableId = target.table.id;
+          g.seatIndex = target.guests.length;
+          target.guests.push(g);
+        });
+      });
+    });
+
+    // REBALANCE: move singles from over-min tables into under-min tables, same side only
+    let iter = 0;
+    while (iter++ < 80) {
+      const under = sideTables.filter(t => t.guests.length < minPerTable);
+      if (under.length === 0) break;
+      let moved = false;
+      for (const u of under) {
+        const donors = sideTables
+          .filter(t => t !== u && t.guests.length > minPerTable)
+          .sort((a, b) => {
+            const aSame = a.primaryGroup === u.primaryGroup ? 0 : 1;
+            const bSame = b.primaryGroup === u.primaryGroup ? 0 : 1;
+            if (aSame !== bSame) return aSame - bSame;
+            return b.guests.length - a.guests.length;
+          });
+        for (const donor of donors) {
+          const single = donor.guests.find(g => !g.partnerId);
+          if (single && u.guests.length + 1 <= maxPerTable) {
+            donor.guests = donor.guests.filter(g => g !== single);
+            u.guests.push(single);
+            single.tableId = u.table.id;
+            single.seatIndex = u.guests.length - 1;
+            // Compact donor seat indices
+            donor.guests.forEach((dg, i) => dg.seatIndex = i);
+            moved = true;
+            break;
+          }
+        }
+        if (moved) break;
+      }
+      if (!moved) break;
+    }
+
+    // Name tables by their dominant group on that side
+    sideTables.forEach(t => {
+      const counts = {};
+      t.guests.forEach(g => { counts[g.group || 'Other'] = (counts[g.group || 'Other'] || 0) + 1; });
+      const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+      if (top) {
+        const main = top[0];
+        const label = side === 'other' ? main : `${sideLabel(side)} ${main}`;
+        t.table.name = label;
+      }
+    });
+  });
+
+  // Interleave non-bridal tables by side — realistic floor plan with both sides spread throughout
+  interleaveTablesBySide();
+  // Reset positions to grid (since interleaving changes order)
+  state.tables.forEach(t => { if (!t.isBridal) { t.x = null; t.y = null; } });
+  ensureDefaultTablePositions();
+}
+
+function interleaveTablesBySide() {
+  const bridal = state.tables.filter(t => t.isBridal);
+  const nonBridal = state.tables.filter(t => !t.isBridal);
+
+  const dominantSide = (tbl) => {
+    const gs = state.guests.filter(g => g.tableId === tbl.id);
+    const gabby = gs.filter(g => g.side === 'gabby').length;
+    const harrison = gs.filter(g => g.side === 'harrison').length;
+    if (gabby > harrison) return 'gabby';
+    if (harrison > gabby) return 'harrison';
+    return 'other';
+  };
+
+  const gabbyTables = nonBridal.filter(t => dominantSide(t) === 'gabby');
+  const harrisonTables = nonBridal.filter(t => dominantSide(t) === 'harrison');
+  const otherTables = nonBridal.filter(t => dominantSide(t) === 'other');
+
+  // Interleave so columns alternate Gabby/Harrison — mixed, realistic layout
+  const interleaved = [];
+  const maxLen = Math.max(gabbyTables.length, harrisonTables.length);
+  for (let i = 0; i < maxLen; i++) {
+    if (gabbyTables[i]) interleaved.push(gabbyTables[i]);
+    if (harrisonTables[i]) interleaved.push(harrisonTables[i]);
+  }
+  interleaved.push(...otherTables);
+
+  state.tables = [...bridal, ...interleaved];
+}
+
+// ============================================================
+// GUEST & TABLE OPERATIONS
+// ============================================================
+function getGuest(id) { return state.guests.find(g => g.id === id); }
+function getTable(id) { return state.tables.find(t => t.id === id); }
+function getPartner(guest) { return guest && guest.partnerId ? getGuest(guest.partnerId) : null; }
+function guestsAtTable(tableId) { return state.guests.filter(g => g.tableId === tableId); }
+
+function createGuest({ name, partnerName, dietary, notes, tableId, side, group }) {
+  const trimmed = (name || '').trim();
+  if (!trimmed) return null;
+  const guest = {
+    id: uid(),
+    name: trimmed,
+    partnerId: null,
+    dietary: (dietary || '').trim(),
+    notes: (notes || '').trim(),
+    tableId: tableId || null,
+    seatIndex: null,
+    side: side || null,
+    group: (group || '').trim()
+  };
+  state.guests.push(guest);
+
+  const pName = (partnerName || '').trim();
+  if (pName) {
+    const partner = {
+      id: uid(),
+      name: pName,
+      partnerId: guest.id,
+      dietary: '',
+      notes: '',
+      tableId: tableId || null,
+      seatIndex: null,
+      side: side || null,
+      group: (group || '').trim()
+    };
+    guest.partnerId = partner.id;
+    state.guests.push(partner);
+  }
+  return guest;
+}
+
+function nextSeatIndex(tableId) {
+  const used = new Set(state.guests.filter(g => g.tableId === tableId && g.seatIndex != null).map(g => g.seatIndex));
+  const table = getTable(tableId);
+  const cap = table ? tableMax(table) : 10;
+  for (let i = 0; i < cap + 20; i++) {
+    if (!used.has(i)) return i;
+  }
+  return used.size;
+}
+
+function seatAt(tableId, seatIndex) {
+  return state.guests.find(g => g.tableId === tableId && g.seatIndex === seatIndex);
+}
+
+function updateGuest(id, updates) {
+  const guest = getGuest(id);
+  if (!guest) return;
+  Object.assign(guest, updates);
+}
+
+function deleteGuest(id) {
+  const guest = getGuest(id);
+  if (!guest) return;
+  if (guest.partnerId) {
+    const partner = getGuest(guest.partnerId);
+    if (partner) partner.partnerId = null;
+  }
+  state.guests = state.guests.filter(g => g.id !== id);
+}
+
+function unpairGuest(id) {
+  const guest = getGuest(id);
+  if (!guest) return;
+  if (guest.partnerId) {
+    const partner = getGuest(guest.partnerId);
+    if (partner) partner.partnerId = null;
+    guest.partnerId = null;
+  }
+}
+
+function pairGuests(id1, id2) {
+  const g1 = getGuest(id1), g2 = getGuest(id2);
+  if (!g1 || !g2 || g1 === g2) return;
+  unpairGuest(id1);
+  unpairGuest(id2);
+  g1.partnerId = g2.id;
+  g2.partnerId = g1.id;
+}
+
+function createTable(name, opts) {
+  const tableNum = state.tables.length + 1;
+  const table = {
+    id: uid(),
+    name: name || `Table ${tableNum}`,
+    createdAt: Date.now(),
+    isBridal: !!(opts && opts.isBridal),
+    capacity: opts && opts.capacity ? opts.capacity : null,
+    x: null,
+    y: null
+  };
+  state.tables.push(table);
+  return table;
+}
+
+const VENUE_COLS = 3;
+const VENUE_CARD_W = 400;
+const VENUE_CARD_H = 460;
+
+function ensureDefaultTablePositions() {
+  let idx = 0;
+  state.tables.forEach(t => {
+    if (t.isBridal) return;
+    if (t.x == null || t.y == null) {
+      t.x = (idx % VENUE_COLS) * VENUE_CARD_W;
+      t.y = Math.floor(idx / VENUE_COLS) * VENUE_CARD_H;
+    }
+    idx++;
+  });
+}
+
+function tableMax(table) {
+  return table.capacity || state.settings.maxPerTable;
+}
+
+function deleteTable(id) {
+  state.guests.forEach(g => { if (g.tableId === id) g.tableId = null; });
+  state.tables = state.tables.filter(t => t.id !== id);
+}
+
+function moveGuestToTable(guestId, tableId) {
+  const guest = getGuest(guestId);
+  if (!guest) return;
+  guest.tableId = tableId;
+  guest.seatIndex = tableId ? nextSeatIndex(tableId) : null;
+}
+
+// ============================================================
+// BULK IMPORT PARSER
+// ============================================================
+function parseGuestLine(line) {
+  let rest = line.trim();
+  if (!rest) return null;
+
+  // Extract [notes]
+  let notes = '';
+  const notesMatch = rest.match(/\[([^\]]*)\]/);
+  if (notesMatch) {
+    notes = notesMatch[1].trim();
+    rest = rest.replace(notesMatch[0], '').trim();
+  }
+
+  // Extract (dietary)
+  let dietary = '';
+  const dietMatch = rest.match(/\(([^)]*)\)/);
+  if (dietMatch) {
+    dietary = dietMatch[1].trim();
+    rest = rest.replace(dietMatch[0], '').trim();
+  }
+
+  // Split on & / + / " and " (with spaces)
+  let name1 = rest, name2 = '';
+  const sepRegex = /\s*(?:&|\+|\band\b)\s*/i;
+  const parts = rest.split(sepRegex);
+  if (parts.length >= 2) {
+    name1 = parts[0].trim();
+    name2 = parts.slice(1).join(' & ').trim();
+  }
+
+  if (!name1) return null;
+  return { name: name1, partnerName: name2, dietary, notes };
+}
+
+function bulkImport(text, replace) {
+  const lines = text.split(/\r?\n/);
+  const parsed = lines.map(parseGuestLine).filter(Boolean);
+  if (parsed.length === 0) {
+    toast('No valid guest lines found', 'warn');
+    return 0;
+  }
+  if (replace) {
+    state.guests = [];
+  }
+  let count = 0;
+  for (const p of parsed) {
+    const g = createGuest(p);
+    if (g) {
+      count += 1;
+      if (p.partnerName) count += 1;
+    }
+  }
+  return count;
+}
+
+// ============================================================
+// SHUFFLE / AUTO-ASSIGN
+// ============================================================
+function getCoupleGroups() {
+  const groups = [];
+  const seen = new Set();
+  for (const g of state.guests) {
+    if (seen.has(g.id)) continue;
+    const partner = getPartner(g);
+    if (partner) {
+      groups.push([g, partner]);
+      seen.add(g.id);
+      seen.add(partner.id);
+    } else {
+      groups.push([g]);
+      seen.add(g.id);
+    }
+  }
+  return groups;
+}
+
+function shuffleArr(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function autoAssign() {
+  // Bridal party stays put — shuffle only non-bridal guests into non-bridal tables
+  const bridalTableIds = new Set(state.tables.filter(t => t.isBridal).map(t => t.id));
+  const bridalGuestIds = new Set(state.guests.filter(g => bridalTableIds.has(g.tableId) || g.group === 'Bridal Party').map(g => g.id));
+
+  const shufflable = state.guests.filter(g => !bridalGuestIds.has(g.id));
+  const groups = shuffleArr(getCoupleGroups().filter(grp => grp.every(g => !bridalGuestIds.has(g.id))));
+  const total = shufflable.length;
+  if (total === 0) {
+    toast('Add some guests first', 'warn');
+    return;
+  }
+
+  const { minPerTable, maxPerTable } = state.settings;
+
+  const minNeeded = Math.max(1, Math.ceil(total / maxPerTable));
+  const maxViable = Math.max(1, Math.floor(total / minPerTable));
+
+  const nonBridalTablesExisting = state.tables.filter(t => !t.isBridal);
+  let targetCount;
+  if (nonBridalTablesExisting.length >= minNeeded && nonBridalTablesExisting.length <= maxViable) {
+    targetCount = nonBridalTablesExisting.length;
+  } else if (nonBridalTablesExisting.length > maxViable) {
+    targetCount = Math.max(minNeeded, maxViable);
+  } else {
+    targetCount = minNeeded;
+  }
+
+  while (state.tables.filter(t => !t.isBridal).length < targetCount) createTable();
+
+  shufflable.forEach(g => g.tableId = null);
+
+  const tables = state.tables.filter(t => !t.isBridal).slice(0, targetCount);
+  const counts = Object.fromEntries(tables.map(t => [t.id, 0]));
+
+  // Place couples first (they're larger and harder to place), then singles
+  const couples = groups.filter(g => g.length === 2);
+  const singles = groups.filter(g => g.length === 1);
+
+  function placeGroup(group) {
+    const candidates = tables
+      .filter(t => counts[t.id] + group.length <= tableMax(t))
+      .sort((a, b) => counts[a.id] - counts[b.id]);
+    if (candidates.length === 0) {
+      const t = createTable();
+      counts[t.id] = 0;
+      tables.push(t);
+      group.forEach(g => g.tableId = t.id);
+      counts[t.id] += group.length;
+      return;
+    }
+    const t = candidates[0];
+    group.forEach(g => g.tableId = t.id);
+    counts[t.id] += group.length;
+  }
+
+  couples.forEach(placeGroup);
+  singles.forEach(placeGroup);
+
+  // Rebalance singles from over-min tables into under-min tables
+  let attempts = 0;
+  while (attempts < 50) {
+    attempts++;
+    const under = tables.filter(t => counts[t.id] < minPerTable && counts[t.id] > 0);
+    if (under.length === 0) break;
+
+    let moved = false;
+    for (const u of under) {
+      const over = tables.filter(t => t.id !== u.id && counts[t.id] > minPerTable);
+      if (over.length === 0) continue;
+      over.sort((a, b) => counts[b.id] - counts[a.id]);
+      const donor = over[0];
+      const donorSingles = state.guests.filter(g => g.tableId === donor.id && !g.partnerId);
+      if (donorSingles.length > 0) {
+        donorSingles[0].tableId = u.id;
+        counts[donor.id]--;
+        counts[u.id]++;
+        moved = true;
+        break;
+      }
+    }
+    if (!moved) break;
+  }
+
+  const surplus = nonBridalTablesExisting.length - targetCount;
+  if (surplus > 0) {
+    setTimeout(() => toast(`Shuffled across ${targetCount} table${targetCount===1?'':'s'} — ${surplus} left empty`, 'warn'), 200);
+  }
+}
+
+// ============================================================
+// RENDERING
+// ============================================================
+const el = id => document.getElementById(id);
+const escapeHTML = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+let searchQuery = '';
+
+function matchesSearch(guest) {
+  if (!searchQuery) return true;
+  const q = searchQuery.toLowerCase();
+  return guest.name.toLowerCase().includes(q)
+    || (guest.dietary || '').toLowerCase().includes(q)
+    || (guest.notes || '').toLowerCase().includes(q)
+    || (guest.group || '').toLowerCase().includes(q);
+}
+
+function matchesFilter(guest) {
+  const f = state.filter || {};
+  if (f.side && guest.side !== f.side) return false;
+  if (f.group && guest.group !== f.group) return false;
+  return true;
+}
+
+const ICON_HEART = '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+const ICON_LEAF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><path d="M16 8 2 22"/></svg>';
+const ICON_NOTE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
+const ICON_EDIT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+const ICON_TRASH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>';
+
+function guestHTML(guest) {
+  const partner = getPartner(guest);
+  const isCouple = !!partner;
+  const hasDiet = !!guest.dietary;
+  const hasNote = !!guest.notes;
+  const match = searchQuery && matchesSearch(guest);
+
+  const icons = [];
+  if (isCouple) icons.push(`<span class="icon-partner" title="Partnered with ${escapeHTML(partner.name)}">${ICON_HEART}</span>`);
+  if (hasDiet) icons.push(`<span class="icon-dietary" title="${escapeHTML(guest.dietary)}">${ICON_LEAF}</span>`);
+  if (hasNote) icons.push(`<span class="icon-note" title="${escapeHTML(guest.notes)}">${ICON_NOTE}</span>`);
+
+  let extraAttr = '';
+  let extraClass = '';
+  if (state.settings.showWarnings && partner && guest.tableId && partner.tableId && guest.tableId !== partner.tableId) {
+    const partnerTable = getTable(partner.tableId);
+    extraAttr = ` data-partner-location="${escapeHTML(partnerTable ? partnerTable.name : '?')}"`;
+    extraClass += ' partner-elsewhere';
+  }
+  if (isCouple) extraClass += ' couple';
+  if (hasDiet) extraClass += ' has-dietary';
+  if (match) extraClass += ' match';
+  if (guest.side === 'gabby') extraClass += ' side-gabby';
+  if (guest.side === 'harrison') extraClass += ' side-harrison';
+
+  const tooltip = [
+    guest.name + (partner ? ` 💕 ${partner.name}` : ''),
+    guest.side ? `Side: ${guest.side === 'gabby' ? 'Gabby' : 'Harrison'}` : '',
+    guest.group ? `Group: ${guest.group}` : '',
+    guest.dietary ? `Dietary: ${guest.dietary}` : '',
+    guest.notes ? `Notes: ${guest.notes}` : ''
+  ].filter(Boolean).join('\n');
+
+  const groupBadge = guest.group ? `<span class="guest-group" title="${escapeHTML(guest.group)}">${escapeHTML(guest.group.replace('Family Friends', 'Fam. Friends').replace('Church/EXTRA', 'Church'))}</span>` : '';
+
+  return `
+    <div class="guest${extraClass}" draggable="true" data-guest-id="${guest.id}"${extraAttr} title="${escapeHTML(tooltip)}">
+      <span class="guest-name">${escapeHTML(guest.name)}</span>
+      ${groupBadge}
+      <span class="guest-icons">${icons.join('')}</span>
+      <span class="guest-actions">
+        <button type="button" class="icon-btn" data-edit-guest="${guest.id}" title="Edit">${ICON_EDIT}</button>
+      </span>
+    </div>
+  `;
+}
+
+function orderedGuestsAtTable(table) {
+  const guests = guestsAtTable(table.id).slice();
+  // Primary sort: by seatIndex if set (this is THE persistent seat position).
+  // Secondary: side > group > name for guests without a set seat.
+  guests.sort((a, b) => {
+    const ai = a.seatIndex, bi = b.seatIndex;
+    if (ai != null && bi != null) return ai - bi;
+    if (ai != null) return -1;
+    if (bi != null) return 1;
+    const sa = a.side || 'z', sb = b.side || 'z';
+    if (sa !== sb) return sa.localeCompare(sb);
+    const ga = a.group || 'z', gb = b.group || 'z';
+    if (ga !== gb) return ga.localeCompare(gb);
+    return a.name.localeCompare(b.name);
+  });
+  return guests;
+}
+
+function tableHTML(table) {
+  const guests = guestsAtTable(table.id);
+  const count = guests.length;
+  const { minPerTable } = state.settings;
+  const capacity = tableMax(table);
+
+  let badgeClass = 'good';
+  if (count === 0) badgeClass = 'empty';
+  else if (count < minPerTable) badgeClass = 'warn';
+  else if (count > capacity) badgeClass = 'bad';
+
+  const ordered = orderedGuestsAtTable(table);
+
+  const inner = ordered.length
+    ? ordered.map(guestHTML).join('')
+    : `<div class="table-empty">Drop guests here</div>`;
+
+  return `
+    <div class="table-card${table.isBridal ? ' bridal' : ''}" data-table-id="${table.id}">
+      <div class="table-header">
+        <input type="text" class="table-name" value="${escapeHTML(table.name)}" data-table-name="${table.id}" aria-label="Table name">
+        <span class="badge ${badgeClass}">${count}/${capacity}</span>
+        <div class="table-actions">
+          <button type="button" class="icon-btn" data-delete-table="${table.id}" title="Remove table">${ICON_TRASH}</button>
+        </div>
+      </div>
+      <div class="table-body" data-table-drop="${table.id}">
+        ${inner}
+      </div>
+    </div>
+  `;
+}
+
+function guestTooltip(guest) {
+  const partner = getPartner(guest);
+  return [
+    guest.name + (partner ? ` ♥ ${partner.name}` : ''),
+    guest.side ? (guest.side === 'gabby' ? "Gabby's side" : "Harrison's side") : '',
+    guest.group || '',
+    guest.dietary ? `Dietary: ${guest.dietary}` : '',
+    guest.notes ? `Notes: ${guest.notes}` : ''
+  ].filter(Boolean).join('\n');
+}
+
+function venueRoundTableHTML(table) {
+  const guests = guestsAtTable(table.id);
+  const count = guests.length;
+  const { minPerTable } = state.settings;
+  const capacity = tableMax(table);
+
+  let stateClass = '';
+  if (count > 0 && count < minPerTable) stateClass = ' under-min';
+  else if (count > capacity) stateClass = ' over-max';
+
+  const plateSize = 380;
+  const cx = plateSize / 2;
+  const cy = plateSize / 2;
+  const seatRadius = 150;
+
+  // Build slots array — one per seat position, filled by guest with matching seatIndex
+  const slots = new Array(capacity).fill(null);
+  guests.forEach(g => {
+    if (g.seatIndex != null && g.seatIndex >= 0 && g.seatIndex < capacity && !slots[g.seatIndex]) {
+      slots[g.seatIndex] = g;
+    }
+  });
+  // Place guests with no seatIndex / out-of-range into first empty slot
+  const unseated = guests.filter(g => !slots.includes(g));
+  unseated.forEach(g => {
+    const idx = slots.findIndex(s => s == null);
+    if (idx >= 0) {
+      slots[idx] = g;
+    }
+  });
+
+  const seats = [];
+  for (let i = 0; i < capacity; i++) {
+    const angle = (i / capacity) * 2 * Math.PI - Math.PI / 2;
+    const x = cx + seatRadius * Math.cos(angle);
+    const y = cy + seatRadius * Math.sin(angle);
+    const guest = slots[i];
+    if (guest) {
+      let seatClass = 'venue-seat';
+      if (guest.side === 'gabby') seatClass += ' side-gabby';
+      if (guest.side === 'harrison') seatClass += ' side-harrison';
+      if (guest.partnerId) seatClass += ' couple';
+      seats.push(`<div class="${seatClass}" draggable="true" data-guest-id="${guest.id}" data-table-id="${table.id}" data-seat-index="${i}" style="left:${x}px;top:${y}px" title="${escapeHTML(guestTooltip(guest))}">${escapeHTML(guest.name)}</div>`);
+    } else {
+      seats.push(`<div class="venue-empty-seat" data-table-id="${table.id}" data-seat-index="${i}" style="left:${x}px;top:${y}px"></div>`);
+    }
+  }
+
+  // Overflow — guests beyond capacity (shouldn't normally happen)
+  const overflow = guests.filter(g => !slots.includes(g));
+  overflow.forEach((guest, i) => {
+    const angle = (i / Math.max(4, overflow.length)) * 2 * Math.PI - Math.PI / 2;
+    const x = cx + (seatRadius + 34) * Math.cos(angle);
+    const y = cy + (seatRadius + 34) * Math.sin(angle);
+    let seatClass = 'venue-seat';
+    if (guest.side === 'gabby') seatClass += ' side-gabby';
+    if (guest.side === 'harrison') seatClass += ' side-harrison';
+    if (guest.partnerId) seatClass += ' couple';
+    seats.push(`<div class="${seatClass}" draggable="true" data-guest-id="${guest.id}" data-table-id="${table.id}" style="left:${x}px;top:${y}px;border-color:var(--status-bad)" title="Over capacity — ${escapeHTML(guestTooltip(guest))}">${escapeHTML(guest.name)}</div>`);
+  });
+
+  const x = table.x != null ? table.x : 0;
+  const y = table.y != null ? table.y : 0;
+
+  return `
+    <div class="venue-table${stateClass}" data-table-id="${table.id}" style="left:${x}px;top:${y}px">
+      <div class="venue-table-handle" data-table-drag="${table.id}" title="Drag to reposition table">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="18" r="1"/></svg>
+      </div>
+      <div class="venue-table-plate" data-table-drop="${table.id}">
+        <div class="venue-circle">
+          <div class="venue-table-name-center" contenteditable="true" data-table-name="${table.id}" data-editable-table-name aria-label="Table name">${escapeHTML(table.name)}</div>
+          <div class="venue-table-count-tiny">${count}/${capacity}</div>
+        </div>
+        ${seats.join('')}
+        <button type="button" class="icon-btn table-remove" data-delete-table="${table.id}" title="Remove table">${ICON_TRASH}</button>
+      </div>
+    </div>
+  `;
+}
+
+function venueBridalHTML(table) {
+  const guests = guestsAtTable(table.id);
+  const count = guests.length;
+  const capacity = tableMax(table);
+
+  // Build slot array by seatIndex
+  const slots = new Array(capacity).fill(null);
+  guests.forEach(g => {
+    if (g.seatIndex != null && g.seatIndex >= 0 && g.seatIndex < capacity && !slots[g.seatIndex]) {
+      slots[g.seatIndex] = g;
+    }
+  });
+  const unseated = guests.filter(g => !slots.includes(g));
+  unseated.forEach(g => {
+    const idx = slots.findIndex(s => s == null);
+    if (idx >= 0) slots[idx] = g;
+  });
+
+  const seats = [];
+  for (let i = 0; i < capacity; i++) {
+    const guest = slots[i];
+    if (guest) {
+      let cls = 'venue-bridal-seat';
+      if (guest.side === 'gabby') cls += ' side-gabby';
+      if (guest.side === 'harrison') cls += ' side-harrison';
+      seats.push(`<div class="${cls}" draggable="true" data-guest-id="${guest.id}" data-table-id="${table.id}" data-seat-index="${i}" title="${escapeHTML(guestTooltip(guest))}">${escapeHTML(guest.name)}</div>`);
+    } else {
+      seats.push(`<div class="venue-empty-seat venue-bridal-empty-seat" data-table-id="${table.id}" data-seat-index="${i}">— empty —</div>`);
+    }
+  }
+  // Overflow
+  const overflow = guests.filter(g => !slots.includes(g));
+  overflow.forEach(guest => {
+    let cls = 'venue-bridal-seat over-max';
+    if (guest.side === 'gabby') cls += ' side-gabby';
+    if (guest.side === 'harrison') cls += ' side-harrison';
+    seats.push(`<div class="${cls}" draggable="true" data-guest-id="${guest.id}" data-table-id="${table.id}" title="Over capacity — ${escapeHTML(guestTooltip(guest))}">${escapeHTML(guest.name)}</div>`);
+  });
+
+  return `
+    <div class="venue-bridal" data-table-id="${table.id}" data-table-drop="${table.id}">
+      <div class="venue-bridal-header">
+        <input type="text" class="table-name venue-bridal-name" value="${escapeHTML(table.name)}" data-table-name="${table.id}" aria-label="Bridal table name">
+        <span class="venue-bridal-count">${count}/${capacity}</span>
+        <button type="button" class="icon-btn" data-delete-table="${table.id}" title="Remove table">${ICON_TRASH}</button>
+      </div>
+      <div class="venue-bridal-seats">${seats.join('')}</div>
+    </div>
+  `;
+}
+
+function render() {
+  // Header stats
+  el('statGuests').textContent = state.guests.length;
+  el('statSeated').textContent = state.guests.filter(g => g.tableId).length;
+  el('statTables').textContent = state.tables.length;
+
+  // Event name
+  el('eventName').value = state.eventName;
+  el('canvasTitle').textContent = state.tables.length === 0 ? 'Getting Started' : 'Seating Plan';
+  const totalCapacity = state.tables.reduce((s, t) => s + tableMax(t), 0);
+  el('canvasSub').textContent = state.tables.length
+    ? `${state.guests.filter(g=>g.tableId).length} of ${state.guests.length} guests seated · ${state.tables.length} table${state.tables.length===1?'':'s'} · capacity ${totalCapacity}`
+    : '';
+  el('minMaxInfo').textContent = `${state.settings.minPerTable}–${state.settings.maxPerTable} per table`;
+
+  // Populate group filter options
+  const groupFilter = el('groupFilter');
+  if (groupFilter) {
+    const prevVal = state.filter.group || '';
+    const groups = Array.from(new Set(state.guests.map(g => g.group).filter(Boolean))).sort();
+    groupFilter.innerHTML = '<option value="">All groups</option>' + groups.map(g => `<option value="${escapeHTML(g)}"${g === prevVal ? ' selected' : ''}>${escapeHTML(g)}</option>`).join('');
+  }
+
+  // Side filter button active state
+  document.querySelectorAll('.side-filter-btn').forEach(b => {
+    b.classList.toggle('active', (b.dataset.side || '') === (state.filter.side || ''));
+  });
+
+  // View toggle active state
+  document.querySelectorAll('#viewToggle button').forEach(b => {
+    b.classList.toggle('active', b.dataset.view === state.view);
+  });
+
+  // Unassigned sidebar
+  const unassigned = state.guests.filter(g => !g.tableId);
+  el('unassignedCount').textContent = unassigned.length;
+
+  const filtered = unassigned.filter(g => matchesSearch(g) && matchesFilter(g))
+    .sort((a, b) => {
+      if (a.partnerId === b.id) return -1;
+      if (b.partnerId === a.id) return 1;
+      const sa = a.side || 'z', sb = b.side || 'z';
+      if (sa !== sb) return sa.localeCompare(sb);
+      const ga = a.group || 'z', gb = b.group || 'z';
+      if (ga !== gb) return ga.localeCompare(gb);
+      return a.name.localeCompare(b.name);
+    });
+
+  const unassignedList = el('unassignedList');
+  unassignedList.innerHTML = filtered.length
+    ? filtered.map(guestHTML).join('')
+    : (unassigned.length === 0
+        ? '<div class="empty">No unassigned guests</div>'
+        : '<div class="empty">No matches</div>');
+
+  // Tables grid
+  const grid = el('tablesGrid');
+  if (state.tables.length === 0) {
+    grid.className = 'tables-grid';
+    grid.innerHTML = `
+      <div class="empty-tables">
+        <h2>Start by adding guests & tables</h2>
+        <p>Use the buttons above, or paste your whole guest list at once.</p>
+        <div class="empty-actions">
+          <button class="btn" data-action="btnAddGuest">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            Add First Guest
+          </button>
+          <button class="btn btn-ghost" data-action="btnBulkImport">
+            Bulk Import
+          </button>
+        </div>
+      </div>
+    `;
+    grid.querySelector('[data-action="btnAddGuest"]').onclick = openAddGuestModal;
+    grid.querySelector('[data-action="btnBulkImport"]').onclick = openBulkImportModal;
+  } else if (state.view === 'venue') {
+    grid.className = 'venue-layout';
+    const bridalTables = state.tables.filter(t => t.isBridal);
+    const roundTables = state.tables.filter(t => !t.isBridal);
+    const bridalHTML = bridalTables.map(venueBridalHTML).join('');
+    const roundHTML = roundTables.length ? `<div class="venue-grid">${roundTables.map(venueRoundTableHTML).join('')}</div>` : '';
+    grid.innerHTML = bridalHTML + roundHTML;
+  } else {
+    grid.className = 'tables-grid';
+    grid.innerHTML = state.tables.map(tableHTML).join('');
+  }
+
+  attachGuestHandlers();
+  attachTableHandlers();
+}
+
+// ============================================================
+// DRAG & DROP
+// ============================================================
+let dragState = null;
+
+function attachGuestHandlers() {
+  // Occupied seats — guest-to-guest swap
+  const occupied = document.querySelectorAll('.guest, .venue-seat, .venue-bridal-seat');
+  occupied.forEach(el => {
+    el.addEventListener('dragstart', onGuestDragStart);
+    el.addEventListener('dragend', onGuestDragEnd);
+    el.addEventListener('dblclick', e => {
+      const id = el.dataset.guestId;
+      if (id) openEditGuestModal(id);
+    });
+    el.addEventListener('dragenter', onGuestDragEnter);
+    el.addEventListener('dragover', onGuestDragOver);
+    el.addEventListener('dragleave', onGuestDragLeave);
+    el.addEventListener('drop', onGuestDrop);
+  });
+
+  // Empty seats — claim that specific seat position
+  document.querySelectorAll('.venue-empty-seat').forEach(el => {
+    el.addEventListener('dragenter', onEmptySeatDragEnter);
+    el.addEventListener('dragover', onEmptySeatDragOver);
+    el.addEventListener('dragleave', onEmptySeatDragLeave);
+    el.addEventListener('drop', onEmptySeatDrop);
+  });
+
+  document.querySelectorAll('[data-edit-guest]').forEach(btn => {
+    btn.onclick = e => {
+      e.stopPropagation();
+      openEditGuestModal(btn.dataset.editGuest);
+    };
+  });
+}
+
+function onGuestDragEnter(e) {
+  if (!dragState || !dragState.guestId) return;
+  const targetId = e.currentTarget.dataset.guestId;
+  if (!targetId || targetId === dragState.guestId) return;
+  e.preventDefault();
+  e.currentTarget.classList.add('swap-target');
+}
+
+function onGuestDragOver(e) {
+  if (!dragState || !dragState.guestId) return;
+  const targetId = e.currentTarget.dataset.guestId;
+  if (!targetId || targetId === dragState.guestId) return;
+  e.preventDefault();
+  e.stopPropagation();
+  e.dataTransfer.dropEffect = 'move';
+}
+
+function onGuestDragLeave(e) {
+  e.currentTarget.classList.remove('swap-target');
+}
+
+function onGuestDrop(e) {
+  const targetId = e.currentTarget.dataset.guestId;
+  e.currentTarget.classList.remove('swap-target');
+  if (!targetId) return;
+  const sourceId = (dragState && dragState.guestId) || e.dataTransfer.getData('text/plain');
+  if (!sourceId || sourceId === targetId) {
+    e.stopPropagation();
+    e.preventDefault();
+    return;
+  }
+  e.preventDefault();
+  e.stopPropagation();
+  const source = getGuest(sourceId);
+  const target = getGuest(targetId);
+  if (!source || !target) return;
+
+  // If they're already partnered, ignore — couples shouldn't swap with themselves
+  if (source.partnerId === target.id) return;
+
+  const srcPartner = getPartner(source);
+  const srcTable = source.tableId, srcSeat = source.seatIndex;
+  const tgtTable = target.tableId, tgtSeat = target.seatIndex;
+
+  // If source is half of a couple and the target is at a different table, the couple must move together.
+  if (srcPartner && srcPartner.id !== target.id && tgtTable !== srcTable) {
+    // Net headcount change at target: -1 (target leaves) + 2 (couple moves in) = +1
+    const tgtCap = tgtTable ? tableMax(getTable(tgtTable)) : Infinity;
+    const tgtCount = tgtTable ? guestsAtTable(tgtTable).length : 0;
+    if (tgtTable && tgtCount + 1 > tgtCap) {
+      toast(`Couple won't fit at destination (max ${tgtCap})`, 'warn');
+      return;
+    }
+    // Move source to target's seat, target to source's seat, partner to next free at target table
+    source.tableId = tgtTable;
+    source.seatIndex = tgtSeat;
+    target.tableId = srcTable;
+    target.seatIndex = srcSeat;
+    srcPartner.tableId = tgtTable;
+    srcPartner.seatIndex = nextSeatIndex(tgtTable);
+    saveState();
+    render();
+    toast(`${source.name} & ${srcPartner.name} moved together`, 'success');
+    return;
+  }
+
+  // Plain swap (same table, or single guests)
+  source.tableId = tgtTable;
+  source.seatIndex = tgtSeat;
+  target.tableId = srcTable;
+  target.seatIndex = srcSeat;
+
+  saveState();
+  render();
+  toast(`Swapped ${source.name} ↔ ${target.name}`, 'success');
+}
+
+// ---- Empty seat drop (claim that specific seat position)
+function onEmptySeatDragEnter(e) {
+  if (!dragState || !dragState.guestId) return;
+  e.preventDefault();
+  e.currentTarget.classList.add('drop-target');
+}
+
+function onEmptySeatDragOver(e) {
+  if (!dragState || !dragState.guestId) return;
+  e.preventDefault();
+  e.stopPropagation();
+  e.dataTransfer.dropEffect = 'move';
+}
+
+function onEmptySeatDragLeave(e) {
+  e.currentTarget.classList.remove('drop-target');
+}
+
+function onEmptySeatDrop(e) {
+  e.currentTarget.classList.remove('drop-target');
+  const tableId = e.currentTarget.dataset.tableId;
+  const seatIndex = parseInt(e.currentTarget.dataset.seatIndex, 10);
+  const sourceId = (dragState && dragState.guestId) || e.dataTransfer.getData('text/plain');
+  if (!sourceId || !tableId || Number.isNaN(seatIndex)) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  const source = getGuest(sourceId);
+  if (!source) return;
+
+  const table = getTable(tableId);
+  if (!table) return;
+  const cap = tableMax(table);
+  const currentAtTable = guestsAtTable(tableId).length;
+  const partner = getPartner(source);
+
+  // Couples move together — capacity check accounts for partner if they're not already at this table
+  if (source.tableId !== tableId) {
+    const incoming = partner && partner.tableId !== tableId ? 2 : 1;
+    if (currentAtTable + incoming > cap) {
+      toast(`Not enough room${partner ? ' for the couple' : ''} (max ${cap})`, 'warn');
+      return;
+    }
+  } else if (partner && partner.tableId !== tableId) {
+    if (currentAtTable + 1 > cap) {
+      toast(`Not enough room for partner`, 'warn');
+      return;
+    }
+  }
+
+  // If something occupies the exact seat, swap them out
+  const occupant = state.guests.find(g => g.tableId === tableId && g.seatIndex === seatIndex && g.id !== sourceId);
+  if (occupant) {
+    occupant.tableId = source.tableId;
+    occupant.seatIndex = source.seatIndex;
+  }
+  source.tableId = tableId;
+  source.seatIndex = seatIndex;
+
+  // Partner follows
+  if (partner && partner.tableId !== tableId) {
+    partner.tableId = tableId;
+    partner.seatIndex = nextSeatIndex(tableId);
+  }
+
+  saveState();
+  render();
+  toast(`Seated ${source.name}${partner && partner.tableId === tableId ? ' & ' + partner.name : ''}`, 'success');
+}
+
+function attachTableHandlers() {
+  // Drop zones
+  document.querySelectorAll('[data-table-drop]').forEach(zone => {
+    const tableId = zone.dataset.tableDrop;
+    zone.addEventListener('dragenter', e => onZoneDragEnter(e, zone));
+    zone.addEventListener('dragover', onZoneDragOver);
+    zone.addEventListener('dragleave', e => onZoneDragLeave(e, zone));
+    zone.addEventListener('drop', e => onZoneDrop(e, zone, tableId));
+    // Also mark the card
+    const card = zone.closest('.table-card');
+    if (card) {
+      card.addEventListener('dragenter', () => card.classList.add('drop-target'));
+      card.addEventListener('dragleave', e => {
+        if (!card.contains(e.relatedTarget)) card.classList.remove('drop-target');
+      });
+      card.addEventListener('drop', () => card.classList.remove('drop-target'));
+    }
+  });
+
+  // Unassigned drop zone
+  const unassignedList = el('unassignedList');
+  unassignedList.addEventListener('dragenter', e => onZoneDragEnter(e, unassignedList));
+  unassignedList.addEventListener('dragover', onZoneDragOver);
+  unassignedList.addEventListener('dragleave', e => onZoneDragLeave(e, unassignedList));
+  unassignedList.addEventListener('drop', e => onZoneDrop(e, unassignedList, null));
+
+  // Table name inputs / editables
+  document.querySelectorAll('[data-table-name]').forEach(elIn => {
+    const id = elIn.dataset.tableName;
+    if (elIn.isContentEditable) {
+      elIn.addEventListener('blur', () => {
+        const table = getTable(id);
+        if (table) {
+          const t = (elIn.textContent || '').trim();
+          if (t) table.name = t;
+          else elIn.textContent = table.name;
+          saveState();
+        }
+      });
+      elIn.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); elIn.blur(); }
+        if (e.key === 'Escape') {
+          const table = getTable(id);
+          if (table) elIn.textContent = table.name;
+          elIn.blur();
+        }
+      });
+    } else {
+      elIn.addEventListener('change', () => {
+        const table = getTable(id);
+        if (table) {
+          table.name = elIn.value.trim() || table.name;
+          saveState();
+          render();
+        }
+      });
+      elIn.addEventListener('keydown', e => { if (e.key === 'Enter') elIn.blur(); });
+    }
+  });
+
+  // Table drag-to-reposition handles
+  document.querySelectorAll('[data-table-drag]').forEach(handle => {
+    handle.addEventListener('mousedown', startTableDrag);
+    handle.addEventListener('touchstart', startTableDragTouch, { passive: false });
+  });
+
+  // Delete table
+  document.querySelectorAll('[data-delete-table]').forEach(btn => {
+    btn.onclick = () => {
+      const id = btn.dataset.deleteTable;
+      const table = getTable(id);
+      const count = guestsAtTable(id).length;
+      const msg = count > 0
+        ? `Remove "${table.name}"? Its ${count} guest${count===1?'':'s'} will return to the unassigned pool.`
+        : `Remove "${table.name}"?`;
+      confirmAction('Remove Table', msg, () => {
+        deleteTable(id);
+        saveState();
+        render();
+        toast('Table removed', 'success');
+      });
+    };
+  });
+}
+
+// ----- Table dragging (reposition on the canvas)
+function startTableDrag(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  beginTableDrag(e.currentTarget, e.clientX, e.clientY, false);
+}
+
+function startTableDragTouch(e) {
+  if (!e.touches || e.touches.length === 0) return;
+  e.preventDefault();
+  e.stopPropagation();
+  const t = e.touches[0];
+  beginTableDrag(e.currentTarget, t.clientX, t.clientY, true);
+}
+
+function beginTableDrag(handle, startClientX, startClientY, isTouch) {
+  const tableEl = handle.closest('.venue-table');
+  if (!tableEl) return;
+  const tableId = tableEl.dataset.tableId;
+  const table = getTable(tableId);
+  if (!table) return;
+
+  ensureDefaultTablePositions();
+  const startLeft = table.x || 0;
+  const startTop = table.y || 0;
+
+  tableEl.classList.add('dragging-table');
+  document.body.style.userSelect = 'none';
+
+  function clientPos(ev) {
+    if (isTouch) {
+      const t = ev.touches && ev.touches[0];
+      return t ? { x: t.clientX, y: t.clientY } : null;
+    }
+    return { x: ev.clientX, y: ev.clientY };
+  }
+
+  function onMove(ev) {
+    const p = clientPos(ev);
+    if (!p) return;
+    const dx = p.x - startClientX;
+    const dy = p.y - startClientY;
+    const newX = Math.max(0, startLeft + dx);
+    const newY = Math.max(0, startTop + dy);
+    table.x = newX;
+    table.y = newY;
+    tableEl.style.left = newX + 'px';
+    tableEl.style.top = newY + 'px';
+    if (isTouch) ev.preventDefault();
+  }
+  function onUp() {
+    document.removeEventListener(isTouch ? 'touchmove' : 'mousemove', onMove);
+    document.removeEventListener(isTouch ? 'touchend' : 'mouseup', onUp);
+    document.removeEventListener(isTouch ? 'touchcancel' : 'mouseleave', onUp);
+    tableEl.classList.remove('dragging-table');
+    document.body.style.userSelect = '';
+    saveState();
+  }
+  document.addEventListener(isTouch ? 'touchmove' : 'mousemove', onMove, { passive: !isTouch });
+  document.addEventListener(isTouch ? 'touchend' : 'mouseup', onUp);
+}
+
+function onGuestDragStart(e) {
+  const id = e.currentTarget.dataset.guestId;
+  dragState = { guestId: id };
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', id);
+  e.currentTarget.classList.add('dragging');
+}
+
+function onGuestDragEnd(e) {
+  e.currentTarget.classList.remove('dragging');
+  document.querySelectorAll('.drop-target').forEach(el => el.classList.remove('drop-target'));
+  dragState = null;
+}
+
+function onZoneDragEnter(e, zone) {
+  e.preventDefault();
+  zone.classList.add('drop-target');
+}
+
+function onZoneDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+}
+
+function onZoneDragLeave(e, zone) {
+  if (!zone.contains(e.relatedTarget)) zone.classList.remove('drop-target');
+}
+
+function onZoneDrop(e, zone, tableId) {
+  e.preventDefault();
+  zone.classList.remove('drop-target');
+  const guestId = (dragState && dragState.guestId) || e.dataTransfer.getData('text/plain');
+  if (!guestId) return;
+
+  const guest = getGuest(guestId);
+  if (!guest) return;
+  if (guest.tableId === tableId) return;
+
+  const partner = getPartner(guest);
+  // Couples move together — check capacity for both
+  if (tableId) {
+    const table = getTable(tableId);
+    const cap = tableMax(table);
+    const count = guestsAtTable(tableId).length;
+    const incoming = partner && partner.tableId !== tableId ? 2 : 1;
+    if (count + incoming > cap) {
+      toast(`Not enough room${partner ? ' for the couple' : ''} (max ${cap})`, 'warn');
+      return;
+    }
+  }
+
+  moveGuestToTable(guestId, tableId);
+  if (partner && partner.tableId !== tableId) {
+    moveGuestToTable(partner.id, tableId);
+  }
+  saveState();
+  render();
+}
+
+// Partner choice modal (inline via confirm modal with 3 buttons)
+function openPartnerChoice(guest, partner, tableId) {
+  const destName = tableId ? (getTable(tableId)?.name || 'table') : 'unassigned pool';
+  const modal = el('confirmModal');
+  el('confirmTitle').textContent = 'Move Partner Too?';
+  el('confirmMessage').innerHTML = `
+    <strong>${escapeHTML(guest.name)}</strong> has a partner, <strong>${escapeHTML(partner.name)}</strong>.<br><br>
+    Move them together to <strong>${escapeHTML(destName)}</strong>?
+  `;
+  const footer = modal.querySelector('.modal-footer');
+  footer.innerHTML = '';
+  const sp = document.createElement('div'); sp.className = 'spacer';
+  const btnCancel = btn('Cancel', 'btn-secondary', () => closeModal(modal));
+  const btnOne = btn('Just ' + guest.name.split(' ')[0], 'btn-secondary', () => {
+    closeModal(modal);
+    moveGuestToTable(guest.id, tableId);
+    saveState();
+    render();
+  });
+  const btnBoth = btn('Move Both', 'btn-primary', () => {
+    closeModal(modal);
+    moveGuestToTable(guest.id, tableId);
+    moveGuestToTable(partner.id, tableId);
+    saveState();
+    render();
+  });
+  footer.appendChild(sp);
+  footer.appendChild(btnCancel);
+  footer.appendChild(btnOne);
+  footer.appendChild(btnBoth);
+  openModal(modal);
+}
+
+function btn(label, cls, onClick) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'btn ' + (cls || '');
+  b.textContent = label;
+  b.onclick = onClick;
+  return b;
+}
+
+// ============================================================
+// MODALS
+// ============================================================
+function openModal(modal) {
+  if (typeof modal === 'string') modal = el(modal);
+  modal.classList.add('active');
+  const firstInput = modal.querySelector('input, textarea, select');
+  if (firstInput) setTimeout(() => firstInput.focus(), 50);
+}
+
+function closeModal(modal) {
+  if (typeof modal === 'string') modal = el(modal);
+  modal.classList.remove('active');
+}
+
+function closeAllModals() {
+  document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeAllModals();
+});
+
+document.querySelectorAll('[data-close-modal]').forEach(el => {
+  el.addEventListener('click', e => {
+    closeModal(e.target.closest('.modal-overlay'));
+  });
+});
+
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) closeModal(overlay);
+  });
+});
+
+// Add Guest Modal
+let editingGuestId = null;
+
+function openAddGuestModal() {
+  editingGuestId = null;
+  el('guestModalTitle').textContent = 'Add Guest';
+  el('btnDeleteGuest').style.display = 'none';
+  el('btnSaveGuest').textContent = 'Add Guest';
+  el('partnerGroup').style.display = '';
+  el('pairingGroup').style.display = 'none';
+  el('guestForm').reset();
+  if (state.filter.side) el('guestSide').value = state.filter.side;
+  if (state.filter.group) el('guestGroupField').value = state.filter.group;
+  populateGuestTableSelect();
+  openModal('guestModal');
+}
+
+function openEditGuestModal(guestId) {
+  const guest = getGuest(guestId);
+  if (!guest) return;
+  editingGuestId = guestId;
+  el('guestModalTitle').textContent = 'Edit Guest';
+  el('btnDeleteGuest').style.display = '';
+  el('btnSaveGuest').textContent = 'Save Changes';
+  el('guestName').value = guest.name;
+  el('guestPartner').value = '';
+  const partner = getPartner(guest);
+  // Hide "create new partner" if already paired; show "pair with existing"
+  el('partnerGroup').style.display = partner ? 'none' : '';
+  el('pairingGroup').style.display = '';
+  el('guestDietary').value = guest.dietary || '';
+  el('guestNotes').value = guest.notes || '';
+  el('guestSide').value = guest.side || '';
+  el('guestGroupField').value = guest.group || '';
+  populateGuestTableSelect(guest.tableId);
+  populatePairWithSelect(guest);
+  openModal('guestModal');
+}
+
+function populatePairWithSelect(guest) {
+  const sel = el('pairWithSelect');
+  const partner = getPartner(guest);
+  // All other guests, sorted by name. Allow choosing anyone (we'll handle un-pairing existing partners)
+  const others = state.guests
+    .filter(g => g.id !== guest.id)
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  const opts = ['<option value="">— None (unpair) —</option>'];
+  others.forEach(g => {
+    const tableName = g.tableId ? getTable(g.tableId)?.name : 'unassigned';
+    const hasPartner = g.partnerId && g.partnerId !== guest.id;
+    const label = `${g.name}${hasPartner ? ' (currently paired)' : ''} · ${tableName}`;
+    const selected = partner && g.id === partner.id ? ' selected' : '';
+    opts.push(`<option value="${g.id}"${selected}>${escapeHTML(label)}</option>`);
+  });
+  sel.innerHTML = opts.join('');
+}
+
+function populateGuestTableSelect(selectedId) {
+  const sel = el('guestTable');
+  sel.innerHTML = '<option value="">— Unassigned —</option>' +
+    state.tables.map(t => `<option value="${t.id}"${t.id === selectedId ? ' selected':''}>${escapeHTML(t.name)} (${guestsAtTable(t.id).length}/${state.settings.maxPerTable})</option>`).join('');
+}
+
+el('guestForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = el('guestName').value.trim();
+  if (!name) return;
+  const partnerName = el('guestPartner').value.trim();
+  const dietary = el('guestDietary').value.trim();
+  const notes = el('guestNotes').value.trim();
+  const tableId = el('guestTable').value || null;
+  const side = el('guestSide').value || null;
+  const group = el('guestGroupField').value.trim();
+
+  if (editingGuestId) {
+    const guest = getGuest(editingGuestId);
+    if (!guest) return;
+    updateGuest(editingGuestId, { name, dietary, notes, tableId, side, group });
+    // Cascade side/group to partner if they share the group
+    if (guest.partnerId) {
+      const partner = getGuest(guest.partnerId);
+      if (partner && (!partner.side || partner.side === guest.side)) partner.side = side;
+    }
+    // Apply pairing change
+    const newPartnerId = el('pairWithSelect').value || '';
+    const currentPartnerId = guest.partnerId || '';
+    if (newPartnerId !== currentPartnerId) {
+      if (newPartnerId === '') {
+        unpairGuest(guest.id);
+      } else {
+        pairGuests(guest.id, newPartnerId);
+      }
+    }
+    saveState();
+    toast('Guest updated', 'success');
+  } else {
+    const g = createGuest({ name, partnerName, dietary, notes, tableId, side, group });
+    if (g && partnerName) {
+      toast(`Added ${name} & ${partnerName}`, 'success');
+    } else {
+      toast(`Added ${name}`, 'success');
+    }
+    saveState();
+  }
+  render();
+  closeModal('guestModal');
+});
+
+el('btnDeleteGuest').addEventListener('click', () => {
+  if (!editingGuestId) return;
+  const guest = getGuest(editingGuestId);
+  if (!guest) return;
+  const partner = getPartner(guest);
+  const msg = partner
+    ? `Delete ${guest.name}? Their partner ${partner.name} will remain but be unpaired.`
+    : `Delete ${guest.name}?`;
+  confirmAction('Delete Guest', msg, () => {
+    deleteGuest(editingGuestId);
+    saveState();
+    render();
+    closeModal('guestModal');
+    toast('Guest removed', 'success');
+  });
+});
+
+// Bulk Import Modal
+function openBulkImportModal() {
+  el('importText').value = '';
+  el('importReplace').checked = false;
+  openModal('importModal');
+}
+
+el('btnDoImport').addEventListener('click', () => {
+  const text = el('importText').value;
+  const replace = el('importReplace').checked;
+  if (!text.trim()) {
+    toast('Paste some guest names first', 'warn');
+    return;
+  }
+  const count = bulkImport(text, replace);
+  if (count > 0) {
+    saveState();
+    render();
+    closeModal('importModal');
+    toast(`Imported ${count} guest${count===1?'':'s'}`, 'success');
+  }
+});
+
+// Settings Modal
+function openSettingsModal() {
+  el('settingMin').value = state.settings.minPerTable;
+  el('settingMax').value = state.settings.maxPerTable;
+  el('settingShowWarnings').checked = state.settings.showWarnings;
+  // Sync config
+  const cfg = getSyncConfig();
+  el('syncConfig').value = cfg ? JSON.stringify(cfg, null, 2) : '';
+  updateSyncStatus(sync.ready);
+  el('btnDisconnectSync').style.display = cfg ? '' : 'none';
+  openModal('settingsModal');
+}
+
+el('btnDisconnectSync').addEventListener('click', () => {
+  disconnectSync();
+  el('syncConfig').value = '';
+  el('btnDisconnectSync').style.display = 'none';
+});
+
+el('btnSaveSettings').addEventListener('click', () => {
+  const min = parseInt(el('settingMin').value, 10);
+  const max = parseInt(el('settingMax').value, 10);
+  if (!Number.isFinite(min) || !Number.isFinite(max) || min < 1 || max < 1 || min > max) {
+    toast('Invalid min/max values', 'error');
+    return;
+  }
+  state.settings.minPerTable = min;
+  state.settings.maxPerTable = max;
+  state.settings.showWarnings = el('settingShowWarnings').checked;
+
+  // Apply sync config changes
+  const rawCfg = el('syncConfig').value.trim();
+  const currentCfg = JSON.stringify(getSyncConfig() || null);
+  let newCfgStr = null;
+  let newCfgObj = null;
+  if (rawCfg) {
+    try {
+      // Be lenient: allow JS-style object literals (with unquoted keys)
+      // First try strict JSON
+      try {
+        newCfgObj = JSON.parse(rawCfg);
+      } catch (jsonErr) {
+        // Try wrapping in parens to evaluate as JS object literal
+        // eslint-disable-next-line no-new-func
+        newCfgObj = (new Function('return ' + rawCfg))();
+      }
+      if (!newCfgObj || !newCfgObj.apiKey || !newCfgObj.databaseURL) {
+        toast('Firebase config needs apiKey and databaseURL', 'error');
+        return;
+      }
+      newCfgStr = JSON.stringify(newCfgObj);
+    } catch (e) {
+      toast('Invalid Firebase config — check JSON', 'error');
+      return;
+    }
+  }
+
+  saveState();
+  render();
+  closeModal('settingsModal');
+  toast('Settings saved', 'success');
+
+  // If sync config changed, save and reload to apply
+  if (newCfgStr !== currentCfg) {
+    if (newCfgObj) {
+      saveSyncConfig(newCfgObj);
+      toast('Reloading to enable live sync…', 'success');
+    } else {
+      saveSyncConfig(null);
+    }
+    setTimeout(() => location.reload(), 600);
+  }
+});
+
+// Confirm Modal
+let confirmCallback = null;
+function confirmAction(title, message, onConfirm, confirmLabel) {
+  el('confirmTitle').textContent = title;
+  el('confirmMessage').textContent = message;
+  confirmCallback = onConfirm;
+  const footer = el('confirmModal').querySelector('.modal-footer');
+  footer.innerHTML = `
+    <div class="spacer"></div>
+    <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+    <button type="button" class="btn btn-danger" id="btnConfirmYes">${escapeHTML(confirmLabel || 'Confirm')}</button>
+  `;
+  footer.querySelector('[data-close-modal]').onclick = () => closeModal('confirmModal');
+  footer.querySelector('#btnConfirmYes').onclick = () => {
+    closeModal('confirmModal');
+    if (confirmCallback) confirmCallback();
+    confirmCallback = null;
+  };
+  openModal('confirmModal');
+}
+
+// ============================================================
+// TOAST & SAVED INDICATOR
+// ============================================================
+let toastTimer = null;
+function toast(message, type) {
+  const t = el('toast');
+  t.textContent = message;
+  t.className = 'toast show ' + (type || '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.classList.remove('show'); }, 2800);
+}
+
+let savedDotTimer = null;
+function flashSavingIndicator() {
+  el('savedDot').classList.add('saving');
+  el('savedText').textContent = 'Saving...';
+}
+function markSaved() {
+  el('savedDot').classList.remove('saving');
+  el('savedText').textContent = 'Saved';
+}
+
+// ============================================================
+// EXPORT / IMPORT
+// ============================================================
+function exportJson() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${(state.eventName || 'wedding').toLowerCase().replace(/[^a-z0-9]+/g,'-')}-seating-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 0);
+  toast('Backup downloaded', 'success');
+}
+
+function exportCsv() {
+  const rows = [['Name','Partner','Table','Dietary','Notes']];
+  state.guests.forEach(g => {
+    const partner = getPartner(g);
+    const table = g.tableId ? getTable(g.tableId) : null;
+    rows.push([
+      g.name,
+      partner ? partner.name : '',
+      table ? table.name : '(unassigned)',
+      g.dietary || '',
+      g.notes || ''
+    ]);
+  });
+  const csv = rows.map(r => r.map(cell => {
+    const s = String(cell).replace(/"/g, '""');
+    return /[",\n]/.test(s) ? `"${s}"` : s;
+  }).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${(state.eventName || 'wedding').toLowerCase().replace(/[^a-z0-9]+/g,'-')}-guests-${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 0);
+  toast('CSV downloaded', 'success');
+}
+
+el('fileInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      if (!parsed || !Array.isArray(parsed.guests) || !Array.isArray(parsed.tables)) {
+        toast('Invalid backup file', 'error');
+        return;
+      }
+      confirmAction('Restore Backup', 'This will replace your current seating plan. Continue?', () => {
+        state = { ...defaultState(), ...parsed, settings: { ...defaultState().settings, ...(parsed.settings || {}) } };
+        saveState();
+        render();
+        toast(`Restored ${parsed.guests.length} guests, ${parsed.tables.length} tables`, 'success');
+      }, 'Restore');
+    } catch (err) {
+      toast('Could not read backup file', 'error');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+// ============================================================
+// MAIN ACTIONS
+// ============================================================
+el('btnAddGuest').addEventListener('click', openAddGuestModal);
+el('btnBulkImport').addEventListener('click', openBulkImportModal);
+
+el('btnAddTable').addEventListener('click', () => {
+  createTable();
+  saveState();
+  render();
+  toast('Table added', 'success');
+  // Scroll to new table
+  setTimeout(() => {
+    const grid = el('tablesGrid');
+    grid.scrollTop = grid.scrollHeight;
+    const cards = grid.querySelectorAll('.table-card');
+    if (cards.length) {
+      cards[cards.length - 1].querySelector('.table-name')?.focus();
+      cards[cards.length - 1].querySelector('.table-name')?.select();
+    }
+  }, 50);
+});
+
+el('btnShuffle').addEventListener('click', () => {
+  if (state.guests.length === 0) {
+    toast('Add some guests first', 'warn');
+    return;
+  }
+  const nonBridalCount = state.guests.filter(g => g.group !== 'Bridal Party').length;
+  confirmAction(
+    'Auto-Assign Seating',
+    `This will reseat ${nonBridalCount} guest${nonBridalCount===1?'':'s'} at side-specific tables (Gabby stays with Gabby, Harrison with Harrison), keeping couples together. The bridal table won't be touched. Continue?`,
+    () => {
+      autoAssignNonBridal();
+      saveState();
+      render();
+      toast('Seating shuffled', 'success');
+    },
+    'Shuffle'
+  );
+});
+
+// More menu
+el('btnMore').addEventListener('click', e => {
+  e.stopPropagation();
+  el('moreMenu').classList.toggle('active');
+});
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.menu-wrap')) {
+    el('moreMenu').classList.remove('active');
+  }
+});
+
+el('moreMenu').addEventListener('click', e => {
+  const item = e.target.closest('.menu-item');
+  if (!item) return;
+  const action = item.dataset.action;
+  el('moreMenu').classList.remove('active');
+  switch (action) {
+    case 'print': window.print(); break;
+    case 'exportJson': exportJson(); break;
+    case 'exportCsv': exportCsv(); break;
+    case 'importJson': el('fileInput').click(); break;
+    case 'settings': openSettingsModal(); break;
+    case 'clearAll':
+      confirmAction(
+        'Clear Everything',
+        'This will delete ALL guests and tables. This cannot be undone except via Ctrl+Z. Are you sure?',
+        () => {
+          state.guests = [];
+          state.tables = [];
+          saveState();
+          render();
+          toast('All cleared', 'success');
+        },
+        'Clear All'
+      );
+      break;
+  }
+});
+
+// Event name
+el('eventName').addEventListener('change', e => {
+  state.eventName = e.target.value.trim() || 'Our Wedding';
+  saveState();
+});
+
+// Search
+el('search').addEventListener('input', e => {
+  searchQuery = e.target.value.trim();
+  render();
+});
+
+// Side filter buttons
+document.querySelectorAll('.side-filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    state.filter.side = btn.dataset.side || '';
+    saveState(true);
+    render();
+  });
+});
+
+// Group filter
+el('groupFilter').addEventListener('change', e => {
+  state.filter.group = e.target.value || '';
+  saveState(true);
+  render();
+});
+
+// View toggle
+document.querySelectorAll('#viewToggle button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    state.view = btn.dataset.view;
+    saveState(true);
+    render();
+  });
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  // Ignore when typing in inputs (unless modal is open and escape)
+  const inInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !inInput) {
+    e.preventDefault();
+    undo();
+  }
+  if (e.key === '/' && !inInput) {
+    e.preventDefault();
+    el('search').focus();
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'n' && !inInput) {
+    e.preventDefault();
+    openAddGuestModal();
+  }
+});
+
+// ============================================================
+// INIT
+// ============================================================
+loadState();
+
+// If first launch and empty, pre-populate with the wedding data
+if (!localStorage.getItem(STORAGE_KEY) && state.guests.length === 0 && state.tables.length === 0) {
+  populateWedding();
+  saveState(true);
+  setTimeout(() => toast(`Loaded ${state.guests.length} guests across ${state.tables.length} tables`, 'success'), 400);
+}
+
+render();
+markSaved();
+
+// Connect to cloud sync if configured
+initSync();
+
+// Warn if leaving with unsaved (shouldn't happen with auto-save but just in case)
+window.addEventListener('beforeunload', () => {
+  if (saveTimer) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch(e) {}
+  }
+});
+</script>
+</body>
+</html>
